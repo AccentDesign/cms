@@ -1,0 +1,25 @@
+package pages
+
+import "fmt"
+
+templ Error(code int, title, message string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta name="description" content={ message }/>
+			<title>{ title }</title>
+			<link rel="stylesheet" href="/static/css/global.css"/>
+		</head>
+		<body class="antialiased">
+			<div class="min-h-screen flex flex-col items-center justify-center">
+				<div class="max-w-[500px]">
+					<h1 class="owl-h1">{ fmt.Sprintf("%d", code) } <span class="text-base font-normal">{ title }</span></h1>
+					<p class="owl-p">{ message }</p>
+					<p class="owl-p"><a class="owl-anchor" href="/">Back to Home</a></p>
+				</div>
+			</div>
+		</body>
+	</html>
+}

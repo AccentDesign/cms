@@ -1,0 +1,54 @@
+package pages
+
+templ (p *Page) HTML() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			@p.Meta.HTML()
+			<title>{ p.Meta.OGSiteName } : { p.Title }</title>
+			<link rel="stylesheet" href="/static/css/global.css"/>
+			<script src="/static/js/htmx.min.js" defer></script>
+			<script src="/static/js/main.js" defer></script>
+		</head>
+		@p.PageType.Body(p)
+	</html>
+}
+
+templ (p *Page) Breadcrumb() {
+	<nav class="owl-breadcrumb" aria-label="breadcrumb">
+		<ol class="owl-breadcrumb-list">
+			for _, ancestor := range p.Ancestors {
+				if ancestor.Level < p.Level {
+					<li class="owl-breadcrumb-item">
+						<a class="owl-breadcrumb-link" href={ templ.URL(ancestor.Url) }>{ ancestor.Title }</a>
+					</li>
+					<li class="owl-breadcrumb-separator" aria-hidden="true" role="presentation">&middot;</li>
+				} else {
+					<li class="owl-breadcrumb-item">
+						<span class="owl-breadcrumb-link" role="link" aria-disabled="true" aria-current="page">{ ancestor.Title }</span>
+					</li>
+				}
+			}
+		</ol>
+	</nav>
+}
+
+templ (p *Page) Footer() {
+	<footer class="space-y-6">
+		<h4 class="owl-h4">page</h4>
+		<ul class="list-disc list-inside">
+			<li>site: [<a class="owl-anchor" href={ templ.URL("/") }>{ p.Meta.OGSiteName }</a>]</li>
+			<li>page: [<a class="owl-anchor" href={ templ.URL(p.Url) }>{ p.Title }</a>]</li>
+			<li>created: { p.CreatedAt.Format("Wed Jan 02 15:04 MST 2006") }</li>
+			<li>updated: { p.UpdatedAt.Format("Wed Jan 02 15:04 MST 2006") }</li>
+		</ul>
+		if len(p.Children) > 0 {
+			<h4 class="owl-h4">children</h4>
+			<ul class="list-disc list-inside">
+				for _, child := range p.Children {
+					<li>[<a class="owl-anchor" href={ templ.URL(child.Url) }>{ child.Title }</a>]</li>
+				}
+			</ul>
+		}
+	</footer>
+}

@@ -1,0 +1,55 @@
+package pages
+
+templ (m *Meta) HTML() {
+	<meta charset="UTF-8"/>
+	<meta name="htmx-config" content='{"includeIndicatorStyles":false}'/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	if m.Description != "" {
+		<meta name="description" content={ m.Description }/>
+	}
+	if m.OGSiteName != "" {
+		<meta name="og:site_name" content={ m.OGSiteName }/>
+	}
+	if m.OGTitle != "" {
+		<meta name="og:title" content={ m.OGTitle }/>
+	}
+	if m.OGDescription != "" {
+		<meta name="og:description" content={ m.OGDescription }/>
+	}
+	if m.OGUrl != "" {
+		<meta name="og:url" content={ m.OGUrl }/>
+	}
+	if m.OGType != "" {
+		<meta name="og:type" content={ m.OGType }/>
+	}
+	if m.OGImage != "" {
+		<meta name="og:image" content={ m.OGImage }/>
+	}
+	if m.OGImageSecureUrl != "" {
+		<meta name="og:image:secure_url" content={ m.OGImageSecureUrl }/>
+	}
+	if m.OGImageWidth != "" {
+		<meta name="og:image:width" content={ m.OGImageWidth }/>
+	}
+	if m.OGImageHeight != "" {
+		<meta name="og:image:height" content={ m.OGImageHeight }/>
+	}
+	if m.ArticlePublisher != "" {
+		<meta name="article:publisher" content={ m.ArticlePublisher }/>
+	}
+	if m.ArticleSection != "" {
+		<meta name="article:section" content={ m.ArticleSection }/>
+	}
+	if m.ArticleTag != "" {
+		<meta name="article:tag" content={ m.ArticleTag }/>
+	}
+	if m.TwitterCard != "" {
+		<meta name="twitter:card" content={ m.TwitterCard }/>
+	}
+	if m.TwitterImage != "" {
+		<meta name="twitter:image" content={ m.TwitterImage }/>
+	}
+	if m.TwitterSite != "" {
+		<meta name="twitter:site" content={ m.TwitterSite }/>
+	}
+}

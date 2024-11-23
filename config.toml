@@ -1,0 +1,20 @@
+[server]
+port = 80
+debug = false
+url = "http://localhost"
+
+[database]
+host = "localhost"
+port = 5432
+user = "postgres"
+password = "password"
+db = "cms"
+ssl_mode = "disable"  # "disable", "allow", "prefer", "require"
+
+[security]
+allowed_hosts = []
+hsts_max_age = 3600
+xss_protection = "1; mode=block"
+content_type_nosniff = "nosniff"
+x_frame_options = "SAMEORIGIN"
+content_security_policy = "default-src 'self'; script-src 'self'; img-src 'self' https://placehold.co/; object-src 'self'"
