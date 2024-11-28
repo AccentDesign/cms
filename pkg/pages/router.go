@@ -97,9 +97,8 @@ func normalizePath(rawPath string) string {
 
 func sitemapHandler(c echo.Context) error {
 	cc := c.(*middleware.CustomContext)
-	ctx := c.Request().Context()
 
-	sitemap, err := getSitemap(ctx, cc.Queries, cc.Config)
+	sitemap, err := getSitemap(c.Request().Context(), cc.Queries, cc.Config)
 	if err != nil {
 		c.Error(err)
 	}

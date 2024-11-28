@@ -1,31 +1,33 @@
 package pages
 
-templ (p *Page) HTML() {
+import "fmt"
+
+templ (page *Page) HTML() {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			@p.Meta.HTML()
-			<title>{ p.Meta.OGSiteName } : { p.Title }</title>
+			@page.Metadata()
+			<title>{ page.Meta.OGSiteName } : { page.Title }</title>
 			<link rel="stylesheet" href="/static/css/global.css"/>
 			<script src="/static/js/htmx.min.js" defer></script>
 			<script src="/static/js/main.js" defer></script>
 		</head>
-		@p.PageType.Body(p)
+		@page.PageType.Body(page)
 	</html>
 }
 
-templ (p *Page) Breadcrumb() {
+templ (page *Page) Breadcrumb() {
 	<nav class="owl-breadcrumb" aria-label="breadcrumb">
 		<ol class="owl-breadcrumb-list">
-			for _, ancestor := range p.Ancestors {
-				if ancestor.Level < p.Level {
+			for _, ancestor := range page.Ancestors {
+				if ancestor.ID < page.ID {
 					<li class="owl-breadcrumb-item">
 						<a class="owl-breadcrumb-link" href={ templ.URL(ancestor.Url) }>{ ancestor.Title }</a>
 					</li>
 					<li class="owl-breadcrumb-separator" aria-hidden="true" role="presentation">&middot;</li>
 				} else {
 					<li class="owl-breadcrumb-item">
-						<span class="owl-breadcrumb-link" role="link" aria-disabled="true" aria-current="page">{ ancestor.Title }</span>
+						<span class="owl-breadcrumb-link" role="link" aria-disabled="true" aria-current="page">{ page.Title }</span>
 					</li>
 				}
 			}
@@ -33,22 +35,81 @@ templ (p *Page) Breadcrumb() {
 	</nav>
 }
 
-templ (p *Page) Footer() {
+templ (page *Page) Footer() {
 	<footer class="space-y-6">
+		<h4 class="owl-h4">site</h4>
+		<ul class="list-disc list-inside">
+			<li>url: [<a class="owl-anchor" href={ templ.URL("/") }>{ page.Meta.OGSiteName }</a>]</li>
+		</ul>
 		<h4 class="owl-h4">page</h4>
 		<ul class="list-disc list-inside">
-			<li>site: [<a class="owl-anchor" href={ templ.URL("/") }>{ p.Meta.OGSiteName }</a>]</li>
-			<li>page: [<a class="owl-anchor" href={ templ.URL(p.Url) }>{ p.Title }</a>]</li>
-			<li>created: { p.CreatedAt.Format("Wed Jan 02 15:04 MST 2006") }</li>
-			<li>updated: { p.UpdatedAt.Format("Wed Jan 02 15:04 MST 2006") }</li>
+			<li>id: { fmt.Sprintf("%d", page.ID) }</li>
+			<li>path: { page.Path }</li>
+			<li>url: [<a class="owl-anchor" href={ templ.URL(page.Url) }>{ page.Title }</a>]</li>
+			<li>created: { page.CreatedAt.Format("Wed Jan 02 15:04 MST 2006") }</li>
+			<li>updated: { page.UpdatedAt.Format("Wed Jan 02 15:04 MST 2006") }</li>
 		</ul>
-		if len(p.Children) > 0 {
+		if len(page.Children) > 0 {
 			<h4 class="owl-h4">children</h4>
 			<ul class="list-disc list-inside">
-				for _, child := range p.Children {
+				for _, child := range page.Children {
 					<li>[<a class="owl-anchor" href={ templ.URL(child.Url) }>{ child.Title }</a>]</li>
 				}
 			</ul>
 		}
 	</footer>
+}
+
+templ (page *Page) Metadata() {
+	<meta charset="UTF-8"/>
+	<meta name="htmx-config" content='{"includeIndicatorStyles":false}'/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	if page.Meta.Description != "" {
+		<meta name="description" content={ page.Meta.Description }/>
+	}
+	if page.Meta.OGSiteName != "" {
+		<meta name="og:site_name" content={ page.Meta.OGSiteName }/>
+	}
+	if page.Meta.OGTitle != "" {
+		<meta name="og:title" content={ page.Meta.OGTitle }/>
+	}
+	if page.Meta.OGDescription != "" {
+		<meta name="og:description" content={ page.Meta.OGDescription }/>
+	}
+	if page.Meta.OGUrl != "" {
+		<meta name="og:url" content={ page.Meta.OGUrl }/>
+	}
+	if page.Meta.OGType != "" {
+		<meta name="og:type" content={ page.Meta.OGType }/>
+	}
+	if page.Meta.OGImage != "" {
+		<meta name="og:image" content={ page.Meta.OGImage }/>
+	}
+	if page.Meta.OGImageSecureUrl != "" {
+		<meta name="og:image:secure_url" content={ page.Meta.OGImageSecureUrl }/>
+	}
+	if page.Meta.OGImageWidth != "" {
+		<meta name="og:image:width" content={ page.Meta.OGImageWidth }/>
+	}
+	if page.Meta.OGImageHeight != "" {
+		<meta name="og:image:height" content={ page.Meta.OGImageHeight }/>
+	}
+	if page.Meta.ArticlePublisher != "" {
+		<meta name="article:publisher" content={ page.Meta.ArticlePublisher }/>
+	}
+	if page.Meta.ArticleSection != "" {
+		<meta name="article:section" content={ page.Meta.ArticleSection }/>
+	}
+	if page.Meta.ArticleTag != "" {
+		<meta name="article:tag" content={ page.Meta.ArticleTag }/>
+	}
+	if page.Meta.TwitterCard != "" {
+		<meta name="twitter:card" content={ page.Meta.TwitterCard }/>
+	}
+	if page.Meta.TwitterImage != "" {
+		<meta name="twitter:image" content={ page.Meta.TwitterImage }/>
+	}
+	if page.Meta.TwitterSite != "" {
+		<meta name="twitter:site" content={ page.Meta.TwitterSite }/>
+	}
 }

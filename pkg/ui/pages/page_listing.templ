@@ -1,16 +1,16 @@
 package pages
 
-templ (t *PageTypeListing) Body(p *Page) {
-	<body class="grid gap-6 p-6 antialiased">
+templ (t *PageTypeListing) Body(page *Page) {
+	<body class="grid gap-16 p-6 antialiased">
 		<header class="space-y-6">
 			<div class="space-y-1">
-				<h1 class="owl-h1">{ p.Title }</h1>
-				<div>{ p.Meta.Description }</div>
+				<h1 class="owl-h1">{ page.Title }</h1>
+				<div>{ page.Meta.Description }</div>
 			</div>
-			@p.Breadcrumb()
+			@page.Breadcrumb()
 		</header>
 		<main class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-			for _, child := range p.Children {
+			for _, child := range page.Children {
 				<a class="space-y-3" href={ templ.URL(child.Url) }>
 					<img class="w-full" src={ child.Meta.OGImage } alt={ child.Title }/>
 					<div class="owl-h3">{ child.Title }</div>
@@ -18,6 +18,6 @@ templ (t *PageTypeListing) Body(p *Page) {
 				</a>
 			}
 		</main>
-		@p.Footer()
+		@page.Footer()
 	</body>
 }

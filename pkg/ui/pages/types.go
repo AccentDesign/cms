@@ -39,7 +39,7 @@ type Relation struct {
 
 // PageType is an interface used as the page type Body is used to render the body tag.
 type PageType interface {
-	Body(p *Page) templ.Component
+	Body(page *Page) templ.Component
 }
 
 // Page struct.

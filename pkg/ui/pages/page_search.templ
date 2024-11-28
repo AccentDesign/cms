@@ -1,13 +1,13 @@
 package pages
 
-templ (t *PageTypeSearch) Body(p *Page) {
-	<body class="grid gap-6 p-6 antialiased">
+templ (t *PageTypeSearch) Body(page *Page) {
+	<body class="grid gap-16 p-6 antialiased">
 		<header class="space-y-6">
 			<div class="space-y-1">
-				<h1 class="owl-h1">{ p.Title }</h1>
-				<div>{ p.Meta.Description }</div>
+				<h1 class="owl-h1">{ page.Title }</h1>
+				<div>{ page.Meta.Description }</div>
 			</div>
-			@p.Breadcrumb()
+			@page.Breadcrumb()
 		</header>
 		<main class="grid gap-6">
 			<input
@@ -15,9 +15,10 @@ templ (t *PageTypeSearch) Body(p *Page) {
 				type="search"
 				name="q"
 				placeholder="search"
-				hx-get={ p.Url }
+				hx-get={ page.Url }
 				hx-target="#results"
 				hx-trigger="input changed delay:500ms, search"
+				hx-swap="outerHTML"
 				hx-replace-url="true"
 				hx-select="#results"
 				value={ t.Query }
@@ -37,6 +38,6 @@ templ (t *PageTypeSearch) Body(p *Page) {
 				}
 			</div>
 		</main>
-		@p.Footer()
+		@page.Footer()
 	</body>
 }
