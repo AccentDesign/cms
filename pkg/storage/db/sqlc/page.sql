@@ -36,6 +36,21 @@ WHERE path <@ subpath($1::ltree, 0, nlevel($1::ltree) - 1)
   AND path <> $1::ltree
 ORDER BY path;
 
+-- name: GetPageSearchResults :many
+-- get the page search results
+SELECT
+    id,
+    title,
+    meta_description,
+    url,
+    ts_headline('english', full_text, plainto_tsquery('english', $1)) AS headline,
+    ts_rank(search_vector, plainto_tsquery('english', $1)) AS rank
+FROM page
+WHERE is_searchable
+AND search_vector @@ plainto_tsquery('english', $1)
+ORDER BY rank DESC
+LIMIT 10;
+
 -- name: GetPagesForSitemap :many
 -- get the page for the sitemap
 SELECT DISTINCT url, updated_at

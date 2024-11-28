@@ -1,0 +1,42 @@
+package pages
+
+templ (t *PageTypeSearch) Body(p *Page) {
+	<body class="grid gap-6 p-6 antialiased">
+		<header class="space-y-6">
+			<div class="space-y-1">
+				<h1 class="owl-h1">{ p.Title }</h1>
+				<div>{ p.Meta.Description }</div>
+			</div>
+			@p.Breadcrumb()
+		</header>
+		<main class="grid gap-6">
+			<input
+				class="p-2 border rounded w-96"
+				type="search"
+				name="q"
+				placeholder="search"
+				hx-get={ p.Url }
+				hx-target="#results"
+				hx-trigger="input changed delay:500ms, search"
+				hx-replace-url="true"
+				hx-select="#results"
+				value={ t.Query }
+			/>
+			<div id="results" class="space-y-6">
+				for _, result := range t.Results {
+					<div class="space-y-2">
+						<div>[<a class="owl-anchor owl-h4" href={ templ.URL(result.Url) }>{ result.Title }</a>]</div>
+						<div>{ result.MetaDescription }</div>
+						<div>
+							@templ.Raw("..." + result.Headline + "...")
+						</div>
+					</div>
+				}
+				if len(t.Results) == 0 {
+					<p>No results</p>
+				}
+			</div>
+		</main>
+		@p.Footer()
+	</body>
+}

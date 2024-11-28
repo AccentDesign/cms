@@ -11,3 +11,6 @@ sql:
         out: "pkg/storage/db/dbx"
         sql_package: "pgx/v5"
         emit_empty_slices: true
+        overrides:
+          - db_type: "tsvector"
+            go_type: "string"

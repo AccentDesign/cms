@@ -16,6 +16,7 @@ type PageType string
 const (
 	PageTypeGeneral PageType = "general"
 	PageTypeListing PageType = "listing"
+	PageTypeSearch  PageType = "search"
 )
 
 func (e *PageType) Scan(src interface{}) error {
@@ -61,6 +62,9 @@ type Page struct {
 	PageType             PageType
 	Title                string
 	IsInSitemap          bool
+	IsSearchable         bool
+	SearchVector         string
+	FullText             string
 	CreatedAt            pgtype.Timestamp
 	UpdatedAt            pgtype.Timestamp
 	MetaDescription      pgtype.Text
@@ -89,6 +93,9 @@ type PageHtml struct {
 	PageType             PageType
 	Title                string
 	IsInSitemap          bool
+	IsSearchable         bool
+	SearchVector         string
+	FullText             string
 	CreatedAt            pgtype.Timestamp
 	UpdatedAt            pgtype.Timestamp
 	MetaDescription      pgtype.Text

@@ -60,6 +60,21 @@ type Page struct {
 // PageTypeListing is used when the content listed from the children and only relevant to base pages.
 type PageTypeListing struct{}
 
+type SearchResult struct {
+	ID              int32
+	Title           string
+	MetaDescription string
+	Url             string
+	Headline        string
+	Rank            float32
+}
+
+// PageTypeSearch is used for the site search.
+type PageTypeSearch struct {
+	Query   string
+	Results []SearchResult
+}
+
 // PageTypeHTML is used when the content is derived from the table page_html
 type PageTypeHTML struct {
 	Html string
