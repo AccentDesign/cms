@@ -110,15 +110,13 @@ create or replace function cms_set_page_search_vector()
     returns trigger as
 $$
 begin
-    RAISE NOTICE '% % %', TG_OP, TG_TABLE_NAME, coalesce(NEW.id, OLD.id);
-
     if TG_TABLE_NAME = 'page' then
         NEW.search_vector = setweight(to_tsvector('english', NEW.title), 'A') || setweight( to_tsvector('english', NEW.meta_description), 'B');
         NEW.full_text = NEW.title || '. ' || NEW.meta_description;
 
     elseif TG_TABLE_NAME = 'page_html' then
-        NEW.search_vector = setweight(to_tsvector('english', NEW.title), 'A') || setweight( to_tsvector('english', NEW.meta_description), 'B')  || setweight( to_tsvector('english', coalesce(regexp_replace(NEW.html, '<[^>]*>', '', 'g'), '')), 'C');
-        NEW.full_text = NEW.title || '. ' || NEW.meta_description || '. ' || coalesce(regexp_replace(NEW.html, '<[^>]*>', '', 'g'), '');
+        NEW.search_vector = setweight(to_tsvector('english', NEW.title), 'A') || setweight( to_tsvector('english', NEW.meta_description), 'B')  || setweight( to_tsvector('english', coalesce(regexp_replace(NEW.html, '<[^>]*>|[\r\n]+|\s{2,}', '', 'g'), '')), 'C');
+        NEW.full_text = NEW.title || '. ' || NEW.meta_description || '. ' || coalesce(regexp_replace(NEW.html, '<[^>]*>|[\r\n]+|\s{2,}', '', 'g'), '');
 
 end if;
 return NEW;
