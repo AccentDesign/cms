@@ -220,58 +220,6 @@ func (q *Queries) GetPageParent(ctx context.Context, dollar_1 string) (Page, err
 	return i, err
 }
 
-const getPageSearchResults = `-- name: GetPageSearchResults :many
-SELECT
-    id,
-    title,
-    meta_description,
-    url,
-    ts_headline('english', full_text, plainto_tsquery('english', $1)) AS headline,
-    ts_rank(search_vector, plainto_tsquery('english', $1)) AS rank
-FROM page
-WHERE is_searchable
-AND search_vector @@ plainto_tsquery('english', $1)
-ORDER BY rank DESC
-LIMIT 10
-`
-
-type GetPageSearchResultsRow struct {
-	ID              int32
-	Title           string
-	MetaDescription pgtype.Text
-	Url             pgtype.Text
-	Headline        string
-	Rank            float32
-}
-
-// get the page search results
-func (q *Queries) GetPageSearchResults(ctx context.Context, plaintoTsquery string) ([]GetPageSearchResultsRow, error) {
-	rows, err := q.db.Query(ctx, getPageSearchResults, plaintoTsquery)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []GetPageSearchResultsRow{}
-	for rows.Next() {
-		var i GetPageSearchResultsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Title,
-			&i.MetaDescription,
-			&i.Url,
-			&i.Headline,
-			&i.Rank,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getPageSiblings = `-- name: GetPageSiblings :many
 SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site
 FROM page
@@ -331,6 +279,68 @@ func (q *Queries) GetPageSiblings(ctx context.Context, dollar_1 string) ([]Page,
 	return items, nil
 }
 
+const getPagesForSearch = `-- name: GetPagesForSearch :many
+SELECT
+    id,
+    title,
+    meta_description,
+    url,
+    ts_headline('english', full_text, plainto_tsquery('english', $1)) AS headline,
+    ts_rank(search_vector, plainto_tsquery('english', $1)) AS rank
+FROM page
+WHERE is_searchable
+AND path <@ $2::ltree
+AND search_vector @@ plainto_tsquery('english', $1)
+ORDER BY rank DESC
+LIMIT $3
+`
+
+type GetPagesForSearchParams struct {
+	PlaintoTsquery string
+	BasePath       string
+	Limit          int64
+}
+
+type GetPagesForSearchRow struct {
+	ID              int32
+	Title           string
+	MetaDescription pgtype.Text
+	Url             pgtype.Text
+	Headline        string
+	Rank            float32
+}
+
+// get the pages for the search results
+// base_path:
+// a path to start the search from, eg: 'about' will search for pages that are descendents of about.
+// this allows for multiple searches across branches of the site.
+func (q *Queries) GetPagesForSearch(ctx context.Context, arg GetPagesForSearchParams) ([]GetPagesForSearchRow, error) {
+	rows, err := q.db.Query(ctx, getPagesForSearch, arg.PlaintoTsquery, arg.BasePath, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetPagesForSearchRow{}
+	for rows.Next() {
+		var i GetPagesForSearchRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.MetaDescription,
+			&i.Url,
+			&i.Headline,
+			&i.Rank,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getPagesForSitemap = `-- name: GetPagesForSitemap :many
 SELECT DISTINCT url, updated_at
 FROM page
@@ -343,7 +353,7 @@ type GetPagesForSitemapRow struct {
 	UpdatedAt pgtype.Timestamp
 }
 
-// get the page for the sitemap
+// get the pages for the sitemap
 func (q *Queries) GetPagesForSitemap(ctx context.Context) ([]GetPagesForSitemapRow, error) {
 	rows, err := q.db.Query(ctx, getPagesForSitemap)
 	if err != nil {

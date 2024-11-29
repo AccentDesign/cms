@@ -33,7 +33,10 @@ func handleGenericPageListing(c echo.Context, queries *dbx.Queries, page *dbx.Pa
 func handleGenericPageSearch(c echo.Context, queries *dbx.Queries, page *dbx.Page) (pages.PageType, error) {
 	query := c.QueryParam("q")
 
-	results, err := queries.GetPageSearchResults(c.Request().Context(), query)
+	results, err := queries.GetPagesForSearch(c.Request().Context(), dbx.GetPagesForSearchParams{
+		PlaintoTsquery: query,
+		Limit:          10,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to get search results: %w", err)
 	}
