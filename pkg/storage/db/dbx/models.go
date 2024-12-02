@@ -65,6 +65,7 @@ type Page struct {
 	IsSearchable         bool
 	SearchVector         string
 	FullText             string
+	NoCache              bool
 	CreatedAt            pgtype.Timestamp
 	UpdatedAt            pgtype.Timestamp
 	MetaDescription      pgtype.Text
@@ -96,6 +97,7 @@ type PageHtml struct {
 	IsSearchable         bool
 	SearchVector         string
 	FullText             string
+	NoCache              bool
 	CreatedAt            pgtype.Timestamp
 	UpdatedAt            pgtype.Timestamp
 	MetaDescription      pgtype.Text

@@ -12,7 +12,7 @@ import (
 )
 
 const getPageAncestors = `-- name: GetPageAncestors :many
-SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site
+SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site
 FROM page
 WHERE path @> $1::ltree
 ORDER BY level
@@ -39,6 +39,7 @@ func (q *Queries) GetPageAncestors(ctx context.Context, dollar_1 string) ([]Page
 			&i.IsSearchable,
 			&i.SearchVector,
 			&i.FullText,
+			&i.NoCache,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.MetaDescription,
@@ -69,7 +70,7 @@ func (q *Queries) GetPageAncestors(ctx context.Context, dollar_1 string) ([]Page
 }
 
 const getPageByPath = `-- name: GetPageByPath :one
-SELECT p.id, p.path, p.level, p.url, p.page_type, p.title, p.is_in_sitemap, p.is_searchable, p.search_vector, p.full_text, p.created_at, p.updated_at, p.meta_description, p.meta_og_site_name, p.meta_og_title, p.meta_og_description, p.meta_og_url, p.meta_og_type, p.meta_og_image, p.meta_og_image_secure_url, p.meta_og_image_width, p.meta_og_image_height, p.meta_article_publisher, p.meta_article_section, p.meta_article_tag, p.meta_twitter_card, p.meta_twitter_image, p.meta_twitter_site, tableoid::regclass::varchar as source
+SELECT p.id, p.path, p.level, p.url, p.page_type, p.title, p.is_in_sitemap, p.is_searchable, p.search_vector, p.full_text, p.no_cache, p.created_at, p.updated_at, p.meta_description, p.meta_og_site_name, p.meta_og_title, p.meta_og_description, p.meta_og_url, p.meta_og_type, p.meta_og_image, p.meta_og_image_secure_url, p.meta_og_image_width, p.meta_og_image_height, p.meta_article_publisher, p.meta_article_section, p.meta_article_tag, p.meta_twitter_card, p.meta_twitter_image, p.meta_twitter_site, tableoid::regclass::varchar as source
 FROM page p
 WHERE path = $1::ltree
 LIMIT 1
@@ -95,6 +96,7 @@ func (q *Queries) GetPageByPath(ctx context.Context, dollar_1 string) (GetPageBy
 		&i.Page.IsSearchable,
 		&i.Page.SearchVector,
 		&i.Page.FullText,
+		&i.Page.NoCache,
 		&i.Page.CreatedAt,
 		&i.Page.UpdatedAt,
 		&i.Page.MetaDescription,
@@ -119,7 +121,7 @@ func (q *Queries) GetPageByPath(ctx context.Context, dollar_1 string) (GetPageBy
 }
 
 const getPageChildren = `-- name: GetPageChildren :many
-SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site
+SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site
 FROM page
 WHERE path <@ $1::ltree
   AND level = nlevel($1::ltree) + 1
@@ -147,6 +149,7 @@ func (q *Queries) GetPageChildren(ctx context.Context, dollar_1 string) ([]Page,
 			&i.IsSearchable,
 			&i.SearchVector,
 			&i.FullText,
+			&i.NoCache,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.MetaDescription,
@@ -177,7 +180,7 @@ func (q *Queries) GetPageChildren(ctx context.Context, dollar_1 string) ([]Page,
 }
 
 const getPageParent = `-- name: GetPageParent :one
-SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site
+SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site
 FROM page
 WHERE path = CASE WHEN nlevel($1::ltree) > 0 THEN subpath($1::ltree, 0, nlevel($1::ltree) - 1) END
 LIMIT 1
@@ -198,6 +201,7 @@ func (q *Queries) GetPageParent(ctx context.Context, dollar_1 string) (Page, err
 		&i.IsSearchable,
 		&i.SearchVector,
 		&i.FullText,
+		&i.NoCache,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.MetaDescription,
@@ -221,7 +225,7 @@ func (q *Queries) GetPageParent(ctx context.Context, dollar_1 string) (Page, err
 }
 
 const getPageSiblings = `-- name: GetPageSiblings :many
-SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site
+SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site
 FROM page
 WHERE path <@ subpath($1::ltree, 0, nlevel($1::ltree) - 1)
   AND level = nlevel($1::ltree)
@@ -250,6 +254,7 @@ func (q *Queries) GetPageSiblings(ctx context.Context, dollar_1 string) ([]Page,
 			&i.IsSearchable,
 			&i.SearchVector,
 			&i.FullText,
+			&i.NoCache,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.MetaDescription,

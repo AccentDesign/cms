@@ -68,6 +68,7 @@ create table page
     is_searchable               boolean                     not null default true,
     search_vector               tsvector                    not null default to_tsvector(''),
     full_text                   text                        not null default '',
+    no_cache                    boolean                     not null default false,
     created_at                  timestamp                   not null default clock_timestamp(),
     updated_at                  timestamp                   not null default clock_timestamp(),
     meta_description            varchar(320),
@@ -182,11 +183,12 @@ values
      '<div class="space-y-6"><div class="h-48 bg-gray-200 rounded-lg"></div><div class="space-y-3"><p>Some crappy text on the home page.</p><div class="h-4 bg-gray-200 rounded w-2/3"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div><div class="h-4 bg-gray-200 rounded w-full"></div></div></div>'
     );
 
-insert into page (path, title, meta_description, meta_og_image, page_type, is_in_sitemap, is_searchable)
+insert into page (path, title, no_cache, meta_description, meta_og_image, page_type, is_in_sitemap, is_searchable)
 values
     (
      'about',
      'about',
+     false,
      'description for the about page',
      'https://placehold.co/600/e5e7eb/ffffff?text=about&font=open-sans',
      'listing',
@@ -196,6 +198,7 @@ values
     (
     'search',
     'search',
+     true,
     'description for the search page',
     'https://placehold.co/600/e5e7eb/ffffff?text=search&font=open-sans',
     'search',

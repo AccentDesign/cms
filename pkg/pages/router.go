@@ -5,10 +5,17 @@ import (
 	"echo.go.dev/pkg/transport/middleware"
 	"echo.go.dev/pkg/ui/pages"
 	"fmt"
+	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strings"
 	"sync"
+	"time"
+)
+
+var (
+	pageCacheDuration = time.Minute * 5
+	pageCache         = NewCache[string, templ.Component](pageCacheDuration, 10*time.Minute)
 )
 
 func Router(e *echo.Echo) {
@@ -22,6 +29,17 @@ func Router(e *echo.Echo) {
 
 func pageHandler(c echo.Context) error {
 	cc := c.(*middleware.CustomContext)
+	path := normalizePath(c.Request().URL.Path)
+
+	if strings.Contains(c.Request().Header.Get("Cache-Control"), "no-cache") {
+		pageCache.Delete(path)
+	}
+
+	if html, found := pageCache.Get(path); found {
+		c.Response().Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%d", pageCacheDuration/time.Second))
+		return cc.RenderComponent(http.StatusOK, html)
+	}
+
 	ctx := c.Request().Context()
 
 	var (
@@ -31,8 +49,6 @@ func pageHandler(c echo.Context) error {
 		ancestors, children                             []dbx.Page
 		errSettings, errPage, errAncestors, errChildren error
 	)
-
-	path := normalizePath(c.Request().URL.Path)
 
 	wg.Add(4)
 
@@ -86,7 +102,18 @@ func pageHandler(c echo.Context) error {
 		Children:  mapRelations(children, settings),
 	}
 
-	return cc.RenderComponent(http.StatusOK, pageComponent.HTML())
+	html := pageComponent.HTML()
+
+	if page.Page.NoCache {
+		c.Response().Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+		c.Response().Header().Set("Pragma", "no-cache")
+		c.Response().Header().Set("Expires", "0")
+	} else {
+		c.Response().Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%d", pageCacheDuration/time.Second))
+		pageCache.Set(path, html, pageCacheDuration)
+	}
+
+	return cc.RenderComponent(http.StatusOK, html)
 }
 
 func normalizePath(rawPath string) string {

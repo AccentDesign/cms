@@ -10,7 +10,7 @@ import (
 )
 
 const getPageTypeHtml = `-- name: GetPageTypeHtml :one
-SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site, html
+SELECT id, path, level, url, page_type, title, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site, html
 FROM page_html
 WHERE id = $1
 LIMIT 1
@@ -31,6 +31,7 @@ func (q *Queries) GetPageTypeHtml(ctx context.Context, id int32) (PageHtml, erro
 		&i.IsSearchable,
 		&i.SearchVector,
 		&i.FullText,
+		&i.NoCache,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.MetaDescription,
