@@ -30,12 +30,13 @@ func Router(e *echo.Echo) {
 func pageHandler(c echo.Context) error {
 	cc := c.(*middleware.CustomContext)
 	path := normalizePath(c.Request().URL.Path)
+	cacheKey := path
 
 	if strings.Contains(c.Request().Header.Get("Cache-Control"), "no-cache") {
-		pageCache.Delete(path)
+		pageCache.Delete(cacheKey)
 	}
 
-	if html, found := pageCache.Get(path); found {
+	if html, found := pageCache.Get(cacheKey); found {
 		c.Response().Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%d", pageCacheDuration/time.Second))
 		return cc.RenderComponent(http.StatusOK, html)
 	}
@@ -110,7 +111,7 @@ func pageHandler(c echo.Context) error {
 		c.Response().Header().Set("Expires", "0")
 	} else {
 		c.Response().Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%d", pageCacheDuration/time.Second))
-		pageCache.Set(path, html, pageCacheDuration)
+		pageCache.Set(cacheKey, html, pageCacheDuration)
 	}
 
 	return cc.RenderComponent(http.StatusOK, html)
