@@ -1,6 +1,9 @@
 package pages
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 templ (page *Page) HTML() {
 	<!DOCTYPE html>
@@ -46,6 +49,7 @@ templ (page *Page) Footer() {
 			<li>id: { fmt.Sprintf("%d", page.ID) }</li>
 			<li>path: { page.Path }</li>
 			<li>url: [<a class="owl-anchor" href={ templ.URL(page.Url) }>{ page.Title }</a>]</li>
+			<li>tags: { strings.Join(page.Tags, ", ") }</li>
 			<li>created: { page.CreatedAt.Format("Wed Jan 02 15:04 MST 2006") }</li>
 			<li>updated: { page.UpdatedAt.Format("Wed Jan 02 15:04 MST 2006") }</li>
 		</ul>

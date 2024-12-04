@@ -61,6 +61,7 @@ type Page struct {
 	Url                  pgtype.Text
 	PageType             PageType
 	Title                string
+	Tags                 []string
 	IsInSitemap          bool
 	IsSearchable         bool
 	SearchVector         string
@@ -93,6 +94,7 @@ type PageHtml struct {
 	Url                  pgtype.Text
 	PageType             PageType
 	Title                string
+	Tags                 []string
 	IsInSitemap          bool
 	IsSearchable         bool
 	SearchVector         string

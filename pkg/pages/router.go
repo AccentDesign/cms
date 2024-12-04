@@ -95,6 +95,7 @@ func pageHandler(c echo.Context) error {
 		Path:      page.Page.Path,
 		Url:       page.Page.Url.String,
 		Level:     page.Page.Level.Int32,
+		Tags:      page.Page.Tags,
 		CreatedAt: page.Page.CreatedAt.Time,
 		UpdatedAt: page.Page.UpdatedAt.Time,
 		Meta:      getMeta(page.Page, settings),

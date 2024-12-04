@@ -49,6 +49,7 @@ type Page struct {
 	Path      string
 	Url       string
 	Level     int32
+	Tags      []string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Meta      Meta
