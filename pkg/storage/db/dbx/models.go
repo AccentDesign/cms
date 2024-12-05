@@ -85,6 +85,7 @@ type Page struct {
 	MetaTwitterCard      pgtype.Text
 	MetaTwitterImage     pgtype.Text
 	MetaTwitterSite      pgtype.Text
+	MetaRobots           pgtype.Text
 }
 
 type PageHtml struct {
@@ -118,6 +119,7 @@ type PageHtml struct {
 	MetaTwitterCard      pgtype.Text
 	MetaTwitterImage     pgtype.Text
 	MetaTwitterSite      pgtype.Text
+	MetaRobots           pgtype.Text
 	Html                 string
 }
 
@@ -139,6 +141,7 @@ type Setting struct {
 	MetaTwitterCard      pgtype.Text
 	MetaTwitterImage     pgtype.Text
 	MetaTwitterSite      pgtype.Text
+	MetaRobots           pgtype.Text
 	CreatedAt            pgtype.Timestamp
 	UpdatedAt            pgtype.Timestamp
 }

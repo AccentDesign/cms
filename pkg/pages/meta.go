@@ -24,6 +24,7 @@ func getMeta(page dbx.Page, setting dbx.Setting) pages.Meta {
 		TwitterCard:      getMetaField(page.MetaTwitterCard, setting.MetaTwitterCard),
 		TwitterImage:     getMetaField(page.MetaTwitterImage, setting.MetaTwitterImage),
 		TwitterSite:      getMetaField(page.MetaTwitterSite, setting.MetaTwitterSite),
+		Robots:           getMetaField(page.MetaRobots, setting.MetaRobots),
 	}
 }
 

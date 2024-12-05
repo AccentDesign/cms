@@ -44,6 +44,7 @@ create table settings
     meta_twitter_card           varchar(320),
     meta_twitter_image          varchar(320),
     meta_twitter_site           varchar(320),
+    meta_robots                 varchar(50),
     created_at                  timestamp                   not null default clock_timestamp(),
     updated_at                  timestamp                   not null default clock_timestamp()
 );
@@ -88,6 +89,7 @@ create table page
     meta_twitter_card           varchar(320),
     meta_twitter_image          varchar(320),
     meta_twitter_site           varchar(320),
+    meta_robots                 varchar(50),
     check (
         (page_type != 'general' and tableoid = 'page'::regclass) or
         (page_type = 'general' and tableoid != 'page'::regclass)
@@ -185,9 +187,12 @@ create trigger check_path_uniqueness
 
 -- example data
 
-insert into settings (meta_og_site_name)
+insert into settings (meta_og_site_name, meta_robots)
 values
-    ('localhost');
+    (
+     'localhost',
+     'index, follow'
+    );
 
 insert into page_html (path, title, meta_description, meta_og_image, html)
 values
@@ -199,7 +204,7 @@ values
      '<div class="space-y-6"><div class="h-48 bg-gray-200 rounded-lg"></div><div class="space-y-3"><p>Some crappy text on the home page.</p><div class="h-4 bg-gray-200 rounded w-2/3"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div><div class="h-4 bg-gray-200 rounded w-full"></div></div></div>'
     );
 
-insert into page (path, title, no_cache, meta_description, meta_og_image, page_type, is_in_sitemap, is_searchable)
+insert into page (path, title, no_cache, meta_description, meta_og_image, meta_robots, page_type, is_in_sitemap, is_searchable)
 values
     (
      'about',
@@ -207,6 +212,7 @@ values
      false,
      'description for the about page',
      'https://placehold.co/600/e5e7eb/ffffff?text=about&font=open-sans',
+     'index, follow',
      'listing',
      true,
      true
@@ -217,6 +223,7 @@ values
      true,
     'description for the search page',
     'https://placehold.co/600/e5e7eb/ffffff?text=search&font=open-sans',
+    'noindex, follow',
     'search',
     false,
     false

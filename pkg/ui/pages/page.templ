@@ -125,4 +125,7 @@ templ (page *Page) Metadata() {
 	if page.Meta.TwitterSite != "" {
 		<meta name="twitter:site" content={ page.Meta.TwitterSite }/>
 	}
+	if page.Meta.Robots != "" {
+		<meta name="robots" content={ page.Meta.Robots }/>
+	}
 }

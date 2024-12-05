@@ -23,6 +23,7 @@ type Meta struct {
 	TwitterCard      string
 	TwitterImage     string
 	TwitterSite      string
+	Robots           string
 }
 
 // Relation is a relation of a page
