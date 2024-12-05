@@ -1,15 +1,9 @@
 package pages
 
 templ (t *PageTypeSearch) Body(page *Page) {
-	<body class="grid gap-16 p-6 antialiased">
-		<header class="space-y-6">
-			<div class="space-y-1">
-				<h1 class="owl-h1">{ page.Title }</h1>
-				<div>{ page.Meta.Description }</div>
-			</div>
-			@page.Breadcrumb()
-		</header>
-		<main class="grid gap-6">
+	<body class="bg-white text-black flex min-h-screen flex-col antialiased space-y-10">
+		@page.Header()
+		<main class="container mx-auto px-6 flex-grow space-y-6">
 			<input
 				class="p-2 border rounded w-96"
 				type="search"

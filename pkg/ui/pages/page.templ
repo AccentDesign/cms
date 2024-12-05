@@ -19,8 +19,14 @@ templ (page *Page) HTML() {
 	</html>
 }
 
-templ (page *Page) Breadcrumb() {
-	<nav class="owl-breadcrumb" aria-label="breadcrumb">
+templ (page *Page) Header() {
+	<header class="bg-black py-16 text-white">
+		<div class="container mx-auto text-center">
+			<h1 class="mb-2 text-3xl font-semibold tracking-tight">{ page.Title }</h1>
+			<p>{ page.Meta.Description }</p>
+		</div>
+	</header>
+	<nav class="container mx-auto px-6 owl-breadcrumb" aria-label="breadcrumb">
 		<ol class="owl-breadcrumb-list">
 			for _, ancestor := range page.Ancestors {
 				if ancestor.ID < page.ID {
@@ -39,28 +45,31 @@ templ (page *Page) Breadcrumb() {
 }
 
 templ (page *Page) Footer() {
-	<footer class="space-y-6">
-		<h4 class="owl-h4">site</h4>
-		<ul class="list-disc list-inside">
-			<li>url: [<a class="owl-anchor" href={ templ.URL("/") }>{ page.Meta.OGSiteName }</a>]</li>
-		</ul>
-		<h4 class="owl-h4">page</h4>
-		<ul class="list-disc list-inside">
-			<li>id: { fmt.Sprintf("%d", page.ID) }</li>
-			<li>path: { page.Path }</li>
-			<li>url: [<a class="owl-anchor" href={ templ.URL(page.Url) }>{ page.Title }</a>]</li>
-			<li>tags: { strings.Join(page.Tags, ", ") }</li>
-			<li>created: { page.CreatedAt.Format("Wed Jan 02 15:04 MST 2006") }</li>
-			<li>updated: { page.UpdatedAt.Format("Wed Jan 02 15:04 MST 2006") }</li>
-		</ul>
-		if len(page.Children) > 0 {
-			<h4 class="owl-h4">children</h4>
-			<ul class="list-disc list-inside">
-				for _, child := range page.Children {
-					<li>[<a class="owl-anchor" href={ templ.URL(child.Url) }>{ child.Title }</a>]</li>
-				}
-			</ul>
-		}
+	<footer class="text-sm bg-gray-50 text-gray-500">
+		<div class="container mx-auto px-6 py-16 grid grid-cols-2 gap-6">
+			<div class="space-y-6">
+				<h3 class="font-medium">Page Information</h3>
+				<ul class="space-y-1">
+					<li><span class="font-medium">ID:</span> { fmt.Sprintf("%d", page.ID) }</li>
+					<li><span class="font-medium">Path:</span> { page.Path }</li>
+					<li><span class="font-medium">Link:</span> <a href={ templ.URL(page.Url) } class="text-gray-700 hover:underline">Current LInk</a></li>
+					<li><span class="font-medium">Tags:</span> { strings.Join(page.Tags, ", ") }</li>
+					<li><span class="font-medium">Created:</span> { page.CreatedAt.Format("January 02, 2006") }</li>
+					<li><span class="font-medium">Updated:</span> { page.UpdatedAt.Format("January 02, 2006") }</li>
+				</ul>
+			</div>
+			<div class="space-y-6">
+				<h3 class="font-medium">Children</h3>
+				<ul class="space-y-1">
+					for _, child := range page.Children {
+						<li><a href={ templ.URL(child.Url) } class="text-gray-700 hover:underline">{ child.Title }</a></li>
+					}
+					if len(page.Children) == 0 {
+						<li>none</li>
+					}
+				</ul>
+			</div>
+		</div>
 	</footer>
 }
 

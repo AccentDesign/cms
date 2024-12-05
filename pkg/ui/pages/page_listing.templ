@@ -1,22 +1,18 @@
 package pages
 
 templ (t *PageTypeListing) Body(page *Page) {
-	<body class="grid gap-16 p-6 antialiased">
-		<header class="space-y-6">
-			<div class="space-y-1">
-				<h1 class="owl-h1">{ page.Title }</h1>
-				<div>{ page.Meta.Description }</div>
+	<body class="bg-white text-black flex min-h-screen flex-col antialiased space-y-10">
+		@page.Header()
+		<main class="container mx-auto px-6 flex-grow">
+			<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+				for _, child := range page.Children {
+					<a class="space-y-3" href={ templ.URL(child.Url) }>
+						<img class="w-full" src={ child.Meta.OGImage } alt={ child.Title }/>
+						<div class="text-xl font-semibold tracking-tight">{ child.Title }</div>
+						<div>{ child.Meta.Description }</div>
+					</a>
+				}
 			</div>
-			@page.Breadcrumb()
-		</header>
-		<main class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-			for _, child := range page.Children {
-				<a class="space-y-3" href={ templ.URL(child.Url) }>
-					<img class="w-full" src={ child.Meta.OGImage } alt={ child.Title }/>
-					<div class="owl-h3">{ child.Title }</div>
-					<div>{ child.Meta.Description }</div>
-				</a>
-			}
 		</main>
 		@page.Footer()
 	</body>

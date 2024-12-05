@@ -14,10 +14,10 @@ templ Error(code int, title, message string) {
 		</head>
 		<body class="antialiased">
 			<div class="min-h-screen flex flex-col items-center justify-center">
-				<div class="max-w-[500px]">
-					<h1 class="owl-h1">{ fmt.Sprintf("%d", code) } <span class="text-base font-normal">{ title }</span></h1>
-					<p class="owl-p">{ message }</p>
-					<p class="owl-p"><a class="owl-anchor" href="/">Back to Home</a></p>
+				<div class="max-w-[500px] space-y-4">
+					<h1 class="text-3xl font-semibold tracking-tight">{ fmt.Sprintf("%d", code) } <span class="text-base font-normal">{ title }</span></h1>
+					<p>{ message }</p>
+					<p><a class="font-medium hover:underline" href="/">Back to Home</a></p>
 				</div>
 			</div>
 		</body>
