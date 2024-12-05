@@ -54,6 +54,7 @@ templ (page *Page) Footer() {
 					<li><span class="font-medium">Path:</span> { page.Path }</li>
 					<li><span class="font-medium">Link:</span> <a href={ templ.URL(page.Url) } class="text-gray-700 hover:underline">Current LInk</a></li>
 					<li><span class="font-medium">Tags:</span> { strings.Join(page.Tags, ", ") }</li>
+					<li><span class="font-medium">Categories:</span> { strings.Join(page.Categories, ", ") }</li>
 					<li><span class="font-medium">Created:</span> { page.CreatedAt.Format("January 02, 2006") }</li>
 					<li><span class="font-medium">Updated:</span> { page.UpdatedAt.Format("January 02, 2006") }</li>
 				</ul>

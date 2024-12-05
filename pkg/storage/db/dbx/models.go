@@ -62,6 +62,7 @@ type Page struct {
 	PageType             PageType
 	Title                string
 	Tags                 []string
+	Categories           []string
 	IsInSitemap          bool
 	IsSearchable         bool
 	SearchVector         string
@@ -96,6 +97,7 @@ type PageHtml struct {
 	PageType             PageType
 	Title                string
 	Tags                 []string
+	Categories           []string
 	IsInSitemap          bool
 	IsSearchable         bool
 	SearchVector         string

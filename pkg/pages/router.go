@@ -90,18 +90,19 @@ func pageHandler(c echo.Context) error {
 	}
 
 	pageComponent := &pages.Page{
-		ID:        page.Page.ID,
-		Title:     page.Page.Title,
-		Path:      page.Page.Path,
-		Url:       page.Page.Url.String,
-		Level:     page.Page.Level.Int32,
-		Tags:      page.Page.Tags,
-		CreatedAt: page.Page.CreatedAt.Time,
-		UpdatedAt: page.Page.UpdatedAt.Time,
-		Meta:      getMeta(page.Page, settings),
-		PageType:  pageType,
-		Ancestors: mapRelations(ancestors, settings),
-		Children:  mapRelations(children, settings),
+		ID:         page.Page.ID,
+		Title:      page.Page.Title,
+		Path:       page.Page.Path,
+		Url:        page.Page.Url.String,
+		Level:      page.Page.Level.Int32,
+		Tags:       page.Page.Tags,
+		Categories: page.Page.Categories,
+		CreatedAt:  page.Page.CreatedAt.Time,
+		UpdatedAt:  page.Page.UpdatedAt.Time,
+		Meta:       getMeta(page.Page, settings),
+		PageType:   pageType,
+		Ancestors:  mapRelations(ancestors, settings),
+		Children:   mapRelations(children, settings),
 	}
 
 	html := pageComponent.HTML()

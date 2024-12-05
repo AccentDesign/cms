@@ -45,18 +45,19 @@ type PageType interface {
 
 // Page struct.
 type Page struct {
-	ID        int32
-	Title     string
-	Path      string
-	Url       string
-	Level     int32
-	Tags      []string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Meta      Meta
-	PageType  PageType
-	Ancestors []Relation
-	Children  []Relation
+	ID         int32
+	Title      string
+	Path       string
+	Url        string
+	Level      int32
+	Tags       []string
+	Categories []string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	Meta       Meta
+	PageType   PageType
+	Ancestors  []Relation
+	Children   []Relation
 }
 
 // PageTypeListing is used when the content listed from the children and only relevant to base pages.
