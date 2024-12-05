@@ -5,7 +5,7 @@ module.exports = {
         extend: {},
     },
     safelist: [
-        "bg-gray-200",
+        "bg-gray-100",
         "flex",
         "h-32",
         "h-4",

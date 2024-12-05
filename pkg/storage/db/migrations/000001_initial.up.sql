@@ -1,30 +1,87 @@
 begin;
 
--- extension
-
+--=============================================================================================
+-- EXTENSIONS
+--=============================================================================================
 create extension if not exists ltree;
 
--- types
-
+--=============================================================================================
+-- TYPES
+--=============================================================================================
 create type page_type as enum (
     'general',
     'listing',
     'search'
 );
 
--- functions
+--=============================================================================================
+-- FUNCTIONS
+--=============================================================================================
 
+-- A generic function to update the updated_at column before update
 create or replace function cms_set_updated_at()
-    returns trigger as
-$$
+    returns trigger as $$
 begin
     NEW.updated_at = clock_timestamp();
-return NEW;
+    return NEW;
 end;
 $$ language plpgsql;
 
--- settings
+-- A function to ensure unique paths across page and inherited tables
+-- Because page_html inherits from page, checking page covers both.
+create or replace function cms_page_path_uniqueness()
+    returns trigger as $$
+begin
+    if exists (select 1 from page where path = NEW.path and id <> NEW.id) then
+        raise exception 'Path "%" is already in use.', NEW.path;
+    end if;
+    return NEW;
+end;
+$$ language plpgsql;
 
+-- A function to set search vectors and full text for pages.
+-- If it's page_html (detected by TG_TABLE_NAME), also process HTML.
+create or replace function cms_set_page_search_vector()
+    returns trigger as $$
+begin
+    -- Common search vector
+    NEW.search_vector :=
+        setweight(to_tsvector('english', NEW.title), 'A') ||
+        setweight(to_tsvector('english', array_to_string(NEW.categories, ' ')), 'B') ||
+        setweight(to_tsvector('english', array_to_string(NEW.tags, ' ')), 'B') ||
+        setweight(to_tsvector('english', coalesce(NEW.meta_description, '')), 'C');
+
+    -- Common full text
+    NEW.full_text :=
+        NEW.title || '. ' ||
+        array_to_string(NEW.categories, ' ') || '. ' ||
+        array_to_string(NEW.tags, ' ') || '. ' ||
+        coalesce(NEW.meta_description, '');
+
+    -- Additional processing if table is page_html
+    if TG_TABLE_NAME = 'page_html' then
+        NEW.full_text := NEW.full_text || '. ' ||
+             coalesce(regexp_replace(NEW.html, '<[^>]*>|[\r\n]+|\s{2,}', '', 'g'), '');
+
+        NEW.search_vector := NEW.search_vector ||
+             setweight(
+                 to_tsvector(
+                     'english',
+                     coalesce(regexp_replace(NEW.html, '<[^>]*>|[\r\n]+|\s{2,}', '', 'g'), '')
+                 ),
+                 'D'
+             );
+    end if;
+
+    return NEW;
+end;
+$$ language plpgsql;
+
+--=============================================================================================
+-- TABLES
+--=============================================================================================
+
+-- SETTINGS TABLE
 create table settings
 (
     id                          serial                      not null primary key check (id = 1),
@@ -49,14 +106,7 @@ create table settings
     updated_at                  timestamp                   not null default clock_timestamp()
 );
 
-create trigger set_updated_at
-    before update
-    on settings
-    for each row
-    execute procedure cms_set_updated_at();
-
--- page
-
+-- PAGE TABLE
 create table page
 (
     id                          serial                      not null primary key,
@@ -98,96 +148,47 @@ create table page
 );
 
 create index page_path_gist_idx on page using gist (path);
-create index page_search_vector_idx ON page USING GIN (search_vector);
+create index page_search_vector_idx on page using gin (search_vector);
 
-create or replace function cms_page_path_uniqueness()
-    returns trigger as
-$$
-begin
-    if exists (select 1 from page where path = NEW.path and id <> NEW.id) then
-        raise exception 'Path "%" is already in use.', NEW.path;
-end if;
-return NEW;
-end;
-$$ language plpgsql;
-
-create or replace function cms_set_page_search_vector()
-    returns trigger as
-$$
-begin
-    -- Common search vector components
-    NEW.search_vector :=
-        setweight(to_tsvector('english', NEW.title), 'A') ||
-        setweight(to_tsvector('english', array_to_string(NEW.categories, ' ')), 'B') ||
-        setweight(to_tsvector('english', array_to_string(NEW.tags, ' ')), 'B') ||
-        setweight(to_tsvector('english', NEW.meta_description), 'C');
-
-    -- Common full text components
-    NEW.full_text := NEW.title ||
-        '. ' || array_to_string(NEW.categories, ' ') ||
-        '. ' || array_to_string(NEW.tags, ' ') ||
-        '. ' || NEW.meta_description;
-
-    if TG_TABLE_NAME = 'page_html' then
-        -- Process HTML content for page_html table
-        NEW.full_text := NEW.full_text || '. ' ||
-            coalesce(regexp_replace(NEW.html, '<[^>]*>|[\r\n]+|\s{2,}', '', 'g'), '');
-
-        NEW.search_vector := NEW.search_vector ||
-            setweight(
-                to_tsvector(
-                    'english',
-                    coalesce(regexp_replace(NEW.html, '<[^>]*>|[\r\n]+|\s{2,}', '', 'g'), '')
-                ),
-                'D'
-            );
-    end if;
-
-return NEW;
-end;
-$$ language plpgsql;
-
-create trigger set_updated_at
-    before update
-    on page
-    for each row
-    execute procedure cms_set_updated_at();
-
-create trigger set_search_index
-    before insert or update
-    on page
-    for each row
-    execute procedure cms_set_page_search_vector();
-
-create trigger check_path_uniqueness
-    before insert or update
-    on page
-    for each row
-    execute procedure cms_page_path_uniqueness();
-
--- page_html
-
+-- PAGE_HTML TABLE (INHERITS PAGE)
 create table page_html
 (
     html                        text                        not null
 ) inherits (page);
 
+--=============================================================================================
+-- TRIGGERS
+--=============================================================================================
+
+-- SETTINGS triggers
 create trigger set_updated_at
-    before update
-    on page_html
-    for each row
-    execute procedure cms_set_updated_at();
+    before update on settings
+    for each row execute procedure cms_set_updated_at();
+
+-- PAGE triggers
+create trigger set_updated_at
+    before update on page
+    for each row execute procedure cms_set_updated_at();
 
 create trigger set_search_index
-    before insert or update
-    on page_html
-    for each row
-    execute procedure cms_set_page_search_vector();
+    before insert or update on page
+    for each row execute procedure cms_set_page_search_vector();
 
 create trigger check_path_uniqueness
-    before insert or update
-    on page_html
-    for each row
-    execute procedure cms_page_path_uniqueness();
+    before insert or update on page
+    for each row execute procedure cms_page_path_uniqueness();
+
+-- PAGE_HTML triggers
+create trigger set_updated_at
+    before update on page_html
+    for each row execute procedure cms_set_updated_at();
+
+create trigger set_search_index
+    before insert or update on page_html
+    for each row execute procedure cms_set_page_search_vector();
+
+create trigger check_path_uniqueness
+    before insert or update on page_html
+    for each row execute procedure cms_page_path_uniqueness();
 
 commit;
