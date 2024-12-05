@@ -112,15 +112,30 @@ create or replace function cms_set_page_search_vector()
     returns trigger as
 $$
 begin
-    if TG_TABLE_NAME = 'page' then
-        NEW.search_vector = setweight(to_tsvector('english', NEW.title), 'A') || setweight( to_tsvector('english', NEW.meta_description), 'B');
-        NEW.full_text = NEW.title || '. ' || NEW.meta_description;
+    -- Common search vector components
+    NEW.search_vector :=
+        setweight(to_tsvector('english', NEW.title), 'A') ||
+        setweight(to_tsvector('english', array_to_string(NEW.tags, ' ')), 'B') ||
+        setweight(to_tsvector('english', NEW.meta_description), 'C');
 
-    elseif TG_TABLE_NAME = 'page_html' then
-        NEW.search_vector = setweight(to_tsvector('english', NEW.title), 'A') || setweight( to_tsvector('english', NEW.meta_description), 'B')  || setweight( to_tsvector('english', coalesce(regexp_replace(NEW.html, '<[^>]*>|[\r\n]+|\s{2,}', '', 'g'), '')), 'C');
-        NEW.full_text = NEW.title || '. ' || NEW.meta_description || '. ' || coalesce(regexp_replace(NEW.html, '<[^>]*>|[\r\n]+|\s{2,}', '', 'g'), '');
+    -- Common full text components
+    NEW.full_text := NEW.title || '. ' || array_to_string(NEW.tags, ' ') || '. ' || NEW.meta_description;
 
-end if;
+    if TG_TABLE_NAME = 'page_html' then
+        -- Process HTML content for page_html table
+        NEW.full_text := NEW.full_text || '. ' ||
+            coalesce(regexp_replace(NEW.html, '<[^>]*>|[\r\n]+|\s{2,}', '', 'g'), '');
+
+        NEW.search_vector := NEW.search_vector ||
+            setweight(
+                to_tsvector(
+                    'english',
+                    coalesce(regexp_replace(NEW.html, '<[^>]*>|[\r\n]+|\s{2,}', '', 'g'), '')
+                ),
+                'D'
+            );
+    end if;
+
 return NEW;
 end;
 $$ language plpgsql;
