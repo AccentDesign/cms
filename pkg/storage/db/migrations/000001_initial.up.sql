@@ -118,11 +118,15 @@ begin
     -- Common search vector components
     NEW.search_vector :=
         setweight(to_tsvector('english', NEW.title), 'A') ||
+        setweight(to_tsvector('english', array_to_string(NEW.categories, ' ')), 'B') ||
         setweight(to_tsvector('english', array_to_string(NEW.tags, ' ')), 'B') ||
         setweight(to_tsvector('english', NEW.meta_description), 'C');
 
     -- Common full text components
-    NEW.full_text := NEW.title || '. ' || array_to_string(NEW.tags, ' ') || '. ' || NEW.meta_description;
+    NEW.full_text := NEW.title ||
+        '. ' || array_to_string(NEW.categories, ' ') ||
+        '. ' || array_to_string(NEW.tags, ' ') ||
+        '. ' || NEW.meta_description;
 
     if TG_TABLE_NAME = 'page_html' then
         -- Process HTML content for page_html table
