@@ -33,6 +33,5 @@ jobs:
           context: ${{ matrix.image.context }}
           platforms: |
             linux/amd64
-            linux/arm64
           push: true
           tags: accent/${{ matrix.image.name }}:${{ matrix.image.tag }}
