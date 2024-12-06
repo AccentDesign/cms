@@ -70,6 +70,7 @@ type Page struct {
 	NoCache              bool
 	CreatedAt            pgtype.Timestamp
 	UpdatedAt            pgtype.Timestamp
+	PublishedAt          pgtype.Timestamp
 	MetaDescription      pgtype.Text
 	MetaOgSiteName       pgtype.Text
 	MetaOgTitle          pgtype.Text
@@ -105,6 +106,7 @@ type PageHtml struct {
 	NoCache              bool
 	CreatedAt            pgtype.Timestamp
 	UpdatedAt            pgtype.Timestamp
+	PublishedAt          pgtype.Timestamp
 	MetaDescription      pgtype.Text
 	MetaOgSiteName       pgtype.Text
 	MetaOgTitle          pgtype.Text

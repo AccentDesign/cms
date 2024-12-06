@@ -12,9 +12,10 @@ import (
 )
 
 const getPageAncestors = `-- name: GetPageAncestors :many
-SELECT id, path, level, url, page_type, title, tags, categories, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site, meta_robots
+SELECT id, path, level, url, page_type, title, tags, categories, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, published_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site, meta_robots
 FROM page
 WHERE path @> $1::ltree
+AND published_at <= clock_timestamp()
 ORDER BY level
 `
 
@@ -44,6 +45,7 @@ func (q *Queries) GetPageAncestors(ctx context.Context, dollar_1 string) ([]Page
 			&i.NoCache,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.PublishedAt,
 			&i.MetaDescription,
 			&i.MetaOgSiteName,
 			&i.MetaOgTitle,
@@ -73,9 +75,10 @@ func (q *Queries) GetPageAncestors(ctx context.Context, dollar_1 string) ([]Page
 }
 
 const getPageByPath = `-- name: GetPageByPath :one
-SELECT p.id, p.path, p.level, p.url, p.page_type, p.title, p.tags, p.categories, p.is_in_sitemap, p.is_searchable, p.search_vector, p.full_text, p.no_cache, p.created_at, p.updated_at, p.meta_description, p.meta_og_site_name, p.meta_og_title, p.meta_og_description, p.meta_og_url, p.meta_og_type, p.meta_og_image, p.meta_og_image_secure_url, p.meta_og_image_width, p.meta_og_image_height, p.meta_article_publisher, p.meta_article_section, p.meta_article_tag, p.meta_twitter_card, p.meta_twitter_image, p.meta_twitter_site, p.meta_robots, tableoid::regclass::varchar as source
+SELECT p.id, p.path, p.level, p.url, p.page_type, p.title, p.tags, p.categories, p.is_in_sitemap, p.is_searchable, p.search_vector, p.full_text, p.no_cache, p.created_at, p.updated_at, p.published_at, p.meta_description, p.meta_og_site_name, p.meta_og_title, p.meta_og_description, p.meta_og_url, p.meta_og_type, p.meta_og_image, p.meta_og_image_secure_url, p.meta_og_image_width, p.meta_og_image_height, p.meta_article_publisher, p.meta_article_section, p.meta_article_tag, p.meta_twitter_card, p.meta_twitter_image, p.meta_twitter_site, p.meta_robots, tableoid::regclass::varchar as source
 FROM page p
 WHERE path = $1::ltree
+AND published_at <= clock_timestamp()
 LIMIT 1
 `
 
@@ -104,6 +107,7 @@ func (q *Queries) GetPageByPath(ctx context.Context, dollar_1 string) (GetPageBy
 		&i.Page.NoCache,
 		&i.Page.CreatedAt,
 		&i.Page.UpdatedAt,
+		&i.Page.PublishedAt,
 		&i.Page.MetaDescription,
 		&i.Page.MetaOgSiteName,
 		&i.Page.MetaOgTitle,
@@ -127,10 +131,11 @@ func (q *Queries) GetPageByPath(ctx context.Context, dollar_1 string) (GetPageBy
 }
 
 const getPageChildren = `-- name: GetPageChildren :many
-SELECT id, path, level, url, page_type, title, tags, categories, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site, meta_robots
+SELECT id, path, level, url, page_type, title, tags, categories, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, published_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site, meta_robots
 FROM page
 WHERE path <@ $1::ltree
-  AND level = nlevel($1::ltree) + 1
+AND level = nlevel($1::ltree) + 1
+AND published_at <= clock_timestamp()
 ORDER BY path
 `
 
@@ -160,117 +165,7 @@ func (q *Queries) GetPageChildren(ctx context.Context, dollar_1 string) ([]Page,
 			&i.NoCache,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.MetaDescription,
-			&i.MetaOgSiteName,
-			&i.MetaOgTitle,
-			&i.MetaOgDescription,
-			&i.MetaOgUrl,
-			&i.MetaOgType,
-			&i.MetaOgImage,
-			&i.MetaOgImageSecureUrl,
-			&i.MetaOgImageWidth,
-			&i.MetaOgImageHeight,
-			&i.MetaArticlePublisher,
-			&i.MetaArticleSection,
-			&i.MetaArticleTag,
-			&i.MetaTwitterCard,
-			&i.MetaTwitterImage,
-			&i.MetaTwitterSite,
-			&i.MetaRobots,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getPageParent = `-- name: GetPageParent :one
-SELECT id, path, level, url, page_type, title, tags, categories, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site, meta_robots
-FROM page
-WHERE path = CASE WHEN nlevel($1::ltree) > 0 THEN subpath($1::ltree, 0, nlevel($1::ltree) - 1) END
-LIMIT 1
-`
-
-// get the parent of a page
-func (q *Queries) GetPageParent(ctx context.Context, dollar_1 string) (Page, error) {
-	row := q.db.QueryRow(ctx, getPageParent, dollar_1)
-	var i Page
-	err := row.Scan(
-		&i.ID,
-		&i.Path,
-		&i.Level,
-		&i.Url,
-		&i.PageType,
-		&i.Title,
-		&i.Tags,
-		&i.Categories,
-		&i.IsInSitemap,
-		&i.IsSearchable,
-		&i.SearchVector,
-		&i.FullText,
-		&i.NoCache,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.MetaDescription,
-		&i.MetaOgSiteName,
-		&i.MetaOgTitle,
-		&i.MetaOgDescription,
-		&i.MetaOgUrl,
-		&i.MetaOgType,
-		&i.MetaOgImage,
-		&i.MetaOgImageSecureUrl,
-		&i.MetaOgImageWidth,
-		&i.MetaOgImageHeight,
-		&i.MetaArticlePublisher,
-		&i.MetaArticleSection,
-		&i.MetaArticleTag,
-		&i.MetaTwitterCard,
-		&i.MetaTwitterImage,
-		&i.MetaTwitterSite,
-		&i.MetaRobots,
-	)
-	return i, err
-}
-
-const getPageSiblings = `-- name: GetPageSiblings :many
-SELECT id, path, level, url, page_type, title, tags, categories, is_in_sitemap, is_searchable, search_vector, full_text, no_cache, created_at, updated_at, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site, meta_robots
-FROM page
-WHERE path <@ subpath($1::ltree, 0, nlevel($1::ltree) - 1)
-  AND level = nlevel($1::ltree)
-  AND path <> $1::ltree
-ORDER BY path
-`
-
-// get the siblings of a page
-func (q *Queries) GetPageSiblings(ctx context.Context, dollar_1 string) ([]Page, error) {
-	rows, err := q.db.Query(ctx, getPageSiblings, dollar_1)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Page{}
-	for rows.Next() {
-		var i Page
-		if err := rows.Scan(
-			&i.ID,
-			&i.Path,
-			&i.Level,
-			&i.Url,
-			&i.PageType,
-			&i.Title,
-			&i.Tags,
-			&i.Categories,
-			&i.IsInSitemap,
-			&i.IsSearchable,
-			&i.SearchVector,
-			&i.FullText,
-			&i.NoCache,
-			&i.CreatedAt,
-			&i.UpdatedAt,
+			&i.PublishedAt,
 			&i.MetaDescription,
 			&i.MetaOgSiteName,
 			&i.MetaOgTitle,
@@ -310,6 +205,7 @@ SELECT
 FROM page
 WHERE is_searchable
 AND path <@ $2::ltree
+AND published_at <= clock_timestamp()
 AND search_vector @@ plainto_tsquery('english', $1)
 ORDER BY rank DESC
 LIMIT $3
@@ -365,6 +261,7 @@ const getPagesForSitemap = `-- name: GetPagesForSitemap :many
 SELECT DISTINCT url, updated_at
 FROM page
 WHERE is_in_sitemap
+AND published_at <= clock_timestamp()
 ORDER BY url
 `
 

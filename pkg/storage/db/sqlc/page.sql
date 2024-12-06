@@ -3,6 +3,7 @@
 SELECT *
 FROM page
 WHERE path @> $1::ltree
+AND published_at <= clock_timestamp()
 ORDER BY level;
 
 -- name: GetPageByPath :one
@@ -10,6 +11,7 @@ ORDER BY level;
 SELECT sqlc.embed(p), tableoid::regclass::varchar as source
 FROM page p
 WHERE path = $1::ltree
+AND published_at <= clock_timestamp()
 LIMIT 1;
 
 -- name: GetPageChildren :many
@@ -17,23 +19,8 @@ LIMIT 1;
 SELECT *
 FROM page
 WHERE path <@ $1::ltree
-  AND level = nlevel($1::ltree) + 1
-ORDER BY path;
-
--- name: GetPageParent :one
--- get the parent of a page
-SELECT *
-FROM page
-WHERE path = CASE WHEN nlevel($1::ltree) > 0 THEN subpath($1::ltree, 0, nlevel($1::ltree) - 1) END
-LIMIT 1;
-
--- name: GetPageSiblings :many
--- get the siblings of a page
-SELECT *
-FROM page
-WHERE path <@ subpath($1::ltree, 0, nlevel($1::ltree) - 1)
-  AND level = nlevel($1::ltree)
-  AND path <> $1::ltree
+AND level = nlevel($1::ltree) + 1
+AND published_at <= clock_timestamp()
 ORDER BY path;
 
 -- name: GetPagesForSearch :many
@@ -51,6 +38,7 @@ SELECT
 FROM page
 WHERE is_searchable
 AND path <@ @base_path::ltree
+AND published_at <= clock_timestamp()
 AND search_vector @@ plainto_tsquery('english', $1)
 ORDER BY rank DESC
 LIMIT $3;
@@ -60,4 +48,5 @@ LIMIT $3;
 SELECT DISTINCT url, updated_at
 FROM page
 WHERE is_in_sitemap
+AND published_at <= clock_timestamp()
 ORDER BY url;

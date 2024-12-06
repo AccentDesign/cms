@@ -124,6 +124,7 @@ create table page
     no_cache                    boolean                     not null default false,
     created_at                  timestamp                   not null default clock_timestamp(),
     updated_at                  timestamp                   not null default clock_timestamp(),
+    published_at                timestamp                   not null default clock_timestamp(),
     meta_description            varchar(320),
     meta_og_site_name           varchar(320),
     meta_og_title               varchar(320),
