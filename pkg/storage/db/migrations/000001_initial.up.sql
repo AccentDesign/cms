@@ -150,6 +150,9 @@ create table page
 
 create index page_path_gist_idx on page using gist (path);
 create index page_search_vector_idx on page using gin (search_vector);
+create index page_published_at_idx on page (published_at);
+create index page_level_idx on page (level);
+create index page_path_text_idx on page ((path::text));
 
 -- PAGE_HTML TABLE (INHERITS PAGE)
 create table page_html
