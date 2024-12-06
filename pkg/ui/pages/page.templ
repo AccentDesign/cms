@@ -48,7 +48,7 @@ templ (page *Page) Footer() {
 	<footer class="text-sm bg-gray-50 text-gray-500">
 		<div class="container mx-auto px-6 py-16 grid grid-cols-2 gap-6">
 			<div class="space-y-6">
-				<h3 class="font-medium">Page Information</h3>
+				<div class="font-medium">Page Information</div>
 				<ul class="space-y-1">
 					<li><span class="font-medium">ID:</span> { fmt.Sprintf("%d", page.ID) }</li>
 					<li><span class="font-medium">Path:</span> { page.Path }</li>
@@ -61,7 +61,7 @@ templ (page *Page) Footer() {
 				</ul>
 			</div>
 			<div class="space-y-6">
-				<h3 class="font-medium">Children</h3>
+				<div class="font-medium">Children</div>
 				<ul class="space-y-1">
 					for _, child := range page.Children {
 						<li><a href={ templ.URL(child.Url) } class="text-gray-700 hover:underline">{ child.Title }</a></li>
