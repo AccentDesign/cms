@@ -47,6 +47,9 @@ func runServer() {
 	engine.Debug = cfg.Server.Debug
 	engine.HTTPErrorHandler = _http.ErrorHandler
 
+	engine.Pre(
+		middleware.AllowHead(),
+	)
 	engine.Use(
 		echomiddleware.Recover(),
 		middleware.Logger(),
