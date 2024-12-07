@@ -45,8 +45,12 @@ LIMIT $3;
 
 -- name: GetPagesForSitemap :many
 -- get the pages for the sitemap
-SELECT DISTINCT url, updated_at
+SELECT
+    url,
+    updated_at,
+    change_frequency,
+    priority::float4
 FROM page
 WHERE is_in_sitemap
 AND published_at <= clock_timestamp()
-ORDER BY url;
+ORDER BY path;

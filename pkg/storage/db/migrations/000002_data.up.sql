@@ -3,7 +3,7 @@ begin;
 insert into settings (meta_og_site_name, meta_robots)
 values
     (
-     'localhost',
+     'cms',
      'index, follow'
     );
 

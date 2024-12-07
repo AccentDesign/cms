@@ -8,6 +8,16 @@ create extension if not exists ltree;
 --=============================================================================================
 -- TYPES
 --=============================================================================================
+create type change_frequency as enum (
+    'never',
+    'yearly',
+    'monthly',
+    'weekly',
+    'daily',
+    'hourly',
+    'always'
+);
+
 create type page_type as enum (
     'general',
     'listing',
@@ -122,6 +132,8 @@ create table page
     search_vector               tsvector                    not null default to_tsvector(''),
     full_text                   text                        not null default '',
     no_cache                    boolean                     not null default false,
+    priority                    numeric(2,1)                not null default 0.5,
+    change_frequency            change_frequency            not null default 'weekly',
     created_at                  timestamp                   not null default clock_timestamp(),
     updated_at                  timestamp                   not null default clock_timestamp(),
     published_at                timestamp                   not null default clock_timestamp(),

@@ -33,14 +33,14 @@ func getSitemap(ctx context.Context, queries *dbx.Queries, cfg *config.Config) (
 		return sitemap, err
 	}
 
+	url := strings.TrimSuffix(cfg.Server.Url, "/")
+
 	for _, entry := range entries {
-		loc := strings.TrimSuffix(cfg.Server.Url, "/")
-		if entry.Url.String != "/" {
-			loc += entry.Url.String
-		}
 		sitemap.Entries = append(sitemap.Entries, &SitemapEntry{
-			Loc:     loc,
-			LastMod: entry.UpdatedAt.Time,
+			Loc:        strings.TrimSuffix(url+entry.Url.String, "/"),
+			LastMod:    entry.UpdatedAt.Time,
+			Priority:   entry.Priority,
+			ChangeFreq: string(entry.ChangeFrequency),
 		})
 	}
 

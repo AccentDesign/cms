@@ -19,15 +19,15 @@ templ (t *PageTypeSearch) Body(page *Page) {
 			/>
 			<div id="results" class="space-y-6">
 				for _, result := range t.Results {
-                    <div class="border-b pb-6">
-                        <a href={ templ.URL(result.Url) } class="text-lg font-medium hover:underline">{ result.Title }</a>
-                        <div class="text-gray-600 mt-2">
-                          <p>{ result.MetaDescription }</p>
-                          <p>
-                            @templ.Raw("..." + result.Headline + "...")
-                          </p>
-                        </div>
-                    </div>
+					<div class="border-b pb-6">
+						<a href={ templ.URL(result.Url) } class="text-lg font-medium hover:underline">{ result.Title }</a>
+						<div class="text-gray-600 mt-2">
+							<p>{ result.MetaDescription }</p>
+							<p>
+								@templ.Raw("..." + result.Headline + "...")
+							</p>
+						</div>
+					</div>
 				}
 				if len(t.Results) == 0 {
 					<p>No results</p>

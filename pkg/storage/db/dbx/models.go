@@ -11,6 +11,53 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type ChangeFrequency string
+
+const (
+	ChangeFrequencyNever   ChangeFrequency = "never"
+	ChangeFrequencyYearly  ChangeFrequency = "yearly"
+	ChangeFrequencyMonthly ChangeFrequency = "monthly"
+	ChangeFrequencyWeekly  ChangeFrequency = "weekly"
+	ChangeFrequencyDaily   ChangeFrequency = "daily"
+	ChangeFrequencyHourly  ChangeFrequency = "hourly"
+	ChangeFrequencyAlways  ChangeFrequency = "always"
+)
+
+func (e *ChangeFrequency) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ChangeFrequency(s)
+	case string:
+		*e = ChangeFrequency(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ChangeFrequency: %T", src)
+	}
+	return nil
+}
+
+type NullChangeFrequency struct {
+	ChangeFrequency ChangeFrequency
+	Valid           bool // Valid is true if ChangeFrequency is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullChangeFrequency) Scan(value interface{}) error {
+	if value == nil {
+		ns.ChangeFrequency, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ChangeFrequency.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullChangeFrequency) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ChangeFrequency), nil
+}
+
 type PageType string
 
 const (
@@ -68,6 +115,8 @@ type Page struct {
 	SearchVector         string
 	FullText             string
 	NoCache              bool
+	Priority             pgtype.Numeric
+	ChangeFrequency      ChangeFrequency
 	CreatedAt            pgtype.Timestamp
 	UpdatedAt            pgtype.Timestamp
 	PublishedAt          pgtype.Timestamp
@@ -104,6 +153,8 @@ type PageHtml struct {
 	SearchVector         string
 	FullText             string
 	NoCache              bool
+	Priority             pgtype.Numeric
+	ChangeFrequency      ChangeFrequency
 	CreatedAt            pgtype.Timestamp
 	UpdatedAt            pgtype.Timestamp
 	PublishedAt          pgtype.Timestamp
