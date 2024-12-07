@@ -10,14 +10,15 @@ func mapRelations(relations []dbx.Page, settings dbx.Setting) []pages.Relation {
 	mapped := make([]pages.Relation, len(relations))
 	for i, rel := range relations {
 		mapped[i] = pages.Relation{
-			ID:        rel.ID,
-			Title:     rel.Title,
-			Path:      rel.Path,
-			Url:       rel.Url.String,
-			Level:     rel.Level.Int32,
-			CreatedAt: rel.CreatedAt.Time,
-			UpdatedAt: rel.UpdatedAt.Time,
-			Meta:      getMeta(rel, settings),
+			ID:            rel.ID,
+			Title:         rel.Title,
+			Path:          rel.Path,
+			Url:           rel.Url.String,
+			Level:         rel.Level.Int32,
+			FeaturedImage: rel.FeaturedImage,
+			CreatedAt:     rel.CreatedAt.Time,
+			UpdatedAt:     rel.UpdatedAt.Time,
+			Meta:          getMeta(rel, settings),
 		}
 	}
 	return mapped

@@ -128,6 +128,7 @@ create table page
     title                       varchar(160)                not null,
     tags                        text[]                      not null default '{}',
     categories                  text[]                      not null default '{}',
+    featured_image              text                        not null default '',
     is_in_sitemap               boolean                     not null default true,
     is_searchable               boolean                     not null default true,
     search_vector               tsvector                    not null default to_tsvector(''),

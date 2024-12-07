@@ -7,7 +7,7 @@ templ (t *PageTypeListing) Body(page *Page) {
 			<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 				for _, child := range page.Children {
 					<a class="space-y-3" href={ templ.URL(child.Url) }>
-						<img class="w-full" src={ child.Meta.OGImage } alt={ child.Title }/>
+						<img class="w-full" src={ child.FeaturedImage } alt={ child.Title }/>
 						<div class="text-xl font-semibold tracking-tight">{ child.Title }</div>
 						<div>{ child.Meta.Description }</div>
 					</a>

@@ -110,6 +110,7 @@ type Page struct {
 	Title                string
 	Tags                 []string
 	Categories           []string
+	FeaturedImage        string
 	IsInSitemap          bool
 	IsSearchable         bool
 	SearchVector         string
@@ -148,6 +149,7 @@ type PageHtml struct {
 	Title                string
 	Tags                 []string
 	Categories           []string
+	FeaturedImage        string
 	IsInSitemap          bool
 	IsSearchable         bool
 	SearchVector         string

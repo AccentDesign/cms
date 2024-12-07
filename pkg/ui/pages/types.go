@@ -28,14 +28,15 @@ type Meta struct {
 
 // Relation is a relation of a page
 type Relation struct {
-	ID        int32
-	Title     string
-	Path      string
-	Url       string
-	Level     int32
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Meta      Meta
+	ID            int32
+	Title         string
+	Path          string
+	Url           string
+	Level         int32
+	FeaturedImage string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Meta          Meta
 }
 
 // PageType is an interface used as the page type Body is used to render the body tag.
@@ -45,20 +46,21 @@ type PageType interface {
 
 // Page struct.
 type Page struct {
-	ID          int32
-	Title       string
-	Path        string
-	Url         string
-	Level       int32
-	Tags        []string
-	Categories  []string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	PublishedAt time.Time
-	Meta        Meta
-	PageType    PageType
-	Ancestors   []Relation
-	Children    []Relation
+	ID            int32
+	Title         string
+	Path          string
+	Url           string
+	Level         int32
+	Tags          []string
+	Categories    []string
+	FeaturedImage string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	PublishedAt   time.Time
+	Meta          Meta
+	PageType      PageType
+	Ancestors     []Relation
+	Children      []Relation
 }
 
 // PageTypeListing is used when the content listed from the children and only relevant to base pages.
