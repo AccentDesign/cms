@@ -1,7 +1,6 @@
 [server]
 port = 80
 debug = false
-url = "http://localhost"
 
 [database]
 host = "localhost"

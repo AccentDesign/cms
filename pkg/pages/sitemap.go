@@ -2,7 +2,6 @@ package pages
 
 import (
 	"context"
-	"echo.go.dev/pkg/config"
 	"echo.go.dev/pkg/storage/db/dbx"
 	"encoding/xml"
 	"strings"
@@ -22,7 +21,7 @@ type Sitemap struct {
 	Entries   []*SitemapEntry `xml:"url"`
 }
 
-func getSitemap(ctx context.Context, queries *dbx.Queries, cfg *config.Config) (*Sitemap, error) {
+func getSitemap(ctx context.Context, queries *dbx.Queries) (*Sitemap, error) {
 	sitemap := &Sitemap{
 		Namespace: "http://www.sitemaps.org/schemas/sitemap/0.9",
 		Entries:   []*SitemapEntry{},
@@ -33,11 +32,9 @@ func getSitemap(ctx context.Context, queries *dbx.Queries, cfg *config.Config) (
 		return sitemap, err
 	}
 
-	url := strings.TrimSuffix(cfg.Server.Url, "/")
-
 	for _, entry := range entries {
 		sitemap.Entries = append(sitemap.Entries, &SitemapEntry{
-			Loc:        strings.TrimSuffix(url+entry.Url.String, "/"),
+			Loc:        strings.TrimSuffix(entry.Url.String, "/"),
 			LastMod:    entry.UpdatedAt.Time,
 			Priority:   entry.Priority,
 			ChangeFreq: string(entry.ChangeFrequency),

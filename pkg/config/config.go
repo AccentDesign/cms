@@ -53,7 +53,6 @@ func FromPath(path string) (*Config, error) {
 type ServerConfig struct {
 	Port  uint16 `mapstructure:"port"`
 	Debug bool   `mapstructure:"debug"`
-	Url   string `mapstructure:"url"`
 }
 
 // DatabaseConfig represents the database configuration.

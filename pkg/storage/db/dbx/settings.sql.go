@@ -10,7 +10,7 @@ import (
 )
 
 const getSettings = `-- name: GetSettings :one
-SELECT id, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site, meta_robots, created_at, updated_at
+SELECT id, site_root_url, meta_description, meta_og_site_name, meta_og_title, meta_og_description, meta_og_url, meta_og_type, meta_og_image, meta_og_image_secure_url, meta_og_image_width, meta_og_image_height, meta_article_publisher, meta_article_section, meta_article_tag, meta_twitter_card, meta_twitter_image, meta_twitter_site, meta_robots, created_at, updated_at
 FROM settings
 LIMIT 1
 `
@@ -21,6 +21,7 @@ func (q *Queries) GetSettings(ctx context.Context) (Setting, error) {
 	var i Setting
 	err := row.Scan(
 		&i.ID,
+		&i.SiteRootUrl,
 		&i.MetaDescription,
 		&i.MetaOgSiteName,
 		&i.MetaOgTitle,

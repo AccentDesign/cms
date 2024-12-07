@@ -180,6 +180,7 @@ type PageHtml struct {
 
 type Setting struct {
 	ID                   int32
+	SiteRootUrl          string
 	MetaDescription      pgtype.Text
 	MetaOgSiteName       pgtype.Text
 	MetaOgTitle          pgtype.Text

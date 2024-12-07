@@ -95,6 +95,7 @@ $$ language plpgsql;
 create table settings
 (
     id                          serial                      not null primary key check (id = 1),
+    site_root_url               varchar(160)                not null default 'http://localhost',
     meta_description            varchar(320),
     meta_og_site_name           varchar(320),
     meta_og_title               varchar(320),
