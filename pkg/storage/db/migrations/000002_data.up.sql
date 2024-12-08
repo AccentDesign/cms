@@ -49,7 +49,7 @@ values
      '{"Owner"}',
      '{"Team"}',
      'description for the dave page',
-     '<div class="space-y-6"><div class="flex items-center space-x-4"><div class="h-32 w-32 bg-gray-100 rounded-full"></div><div class="space-y-2"><div class="h-4 bg-gray-100 rounded w-1/2"></div><div class="h-4 bg-gray-100 rounded w-1/3"></div></div></div><div class="space-y-3"><p>Hello im dave a strapping six footer from the rough end of the trench.</p><div class="h-4 bg-gray-100 rounded w-full"></div><div class="h-4 bg-gray-100 rounded w-5/6"></div><div class="h-4 bg-gray-100 rounded w-4/6"></div></div></div>'
+     '<div class="space-y-6"><div class="flex items-center space-x-4" _="on load set #featuredImage.src to window.pageData.featured_image"><img id="featuredImage" alt="Featured Image" class="h-32 w-32 bg-gray-100 rounded-full"><div class="space-y-2"><div class="h-4 bg-gray-100 rounded w-1/2"></div><div class="h-4 bg-gray-100 rounded w-1/3"></div></div></div><div class="space-y-3"><p>Hello im dave a strapping six footer from the rough end of the trench.</p><div class="h-4 bg-gray-100 rounded w-full"></div><div class="h-4 bg-gray-100 rounded w-5/6"></div><div class="h-4 bg-gray-100 rounded w-4/6"></div></div></div>'
     ),
     (
      'about.karen',
@@ -58,7 +58,7 @@ values
      '{"Manager"}',
      '{"Team"}',
      'description for the karen page',
-     '<div class="space-y-6"><div class="flex items-center space-x-4"><div class="h-32 w-32 bg-gray-100 rounded-full"></div><div class="space-y-2"><div class="h-4 bg-gray-100 rounded w-1/2"></div><div class="h-4 bg-gray-100 rounded w-1/3"></div></div></div><div class="space-y-3"><p>Hello im karen, daves better half.</p><div class="h-4 bg-gray-100 rounded w-full"></div><div class="h-4 bg-gray-100 rounded w-5/6"></div><div class="h-4 bg-gray-100 rounded w-4/6"></div></div></div>'
+     '<div class="space-y-6"><div class="flex items-center space-x-4" _="on load set #featuredImage.src to window.pageData.featured_image"><img id="featuredImage" alt="Featured Image" class="h-32 w-32 bg-gray-100 rounded-full"><div class="space-y-2"><div class="h-4 bg-gray-100 rounded w-1/2"></div><div class="h-4 bg-gray-100 rounded w-1/3"></div></div></div><div class="space-y-3"><p>Hello im karen, daves better half.</p><div class="h-4 bg-gray-100 rounded w-full"></div><div class="h-4 bg-gray-100 rounded w-5/6"></div><div class="h-4 bg-gray-100 rounded w-4/6"></div></div></div>'
     ),
     (
      'about.geoff',
@@ -67,7 +67,7 @@ values
      '{"Owner"}',
      '{"Team"}',
      'description for the geoff page',
-     '<div class="space-y-6"><div class="flex items-center space-x-4"><div class="h-32 w-32 bg-gray-100 rounded-full"></div><div class="space-y-2"><div class="h-4 bg-gray-100 rounded w-1/2"></div><div class="h-4 bg-gray-100 rounded w-1/3"></div></div></div><div class="space-y-3"><p>Hello im geoff and I love a good factory.</p><div class="h-4 bg-gray-100 rounded w-full"></div><div class="h-4 bg-gray-100 rounded w-5/6"></div><div class="h-4 bg-gray-100 rounded w-4/6"></div></div></div>'
+     '<div class="space-y-6"><div class="flex items-center space-x-4" _="on load set #featuredImage.src to window.pageData.featured_image"><img id="featuredImage" alt="Featured Image" class="h-32 w-32 bg-gray-100 rounded-full"><div class="space-y-2"><div class="h-4 bg-gray-100 rounded w-1/2"></div><div class="h-4 bg-gray-100 rounded w-1/3"></div></div></div><div class="space-y-3"><p>Hello im geoff and I love a good factory.</p><div class="h-4 bg-gray-100 rounded w-full"></div><div class="h-4 bg-gray-100 rounded w-5/6"></div><div class="h-4 bg-gray-100 rounded w-4/6"></div></div></div>'
     );
 
 commit;

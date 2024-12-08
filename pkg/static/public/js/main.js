@@ -1,3 +1,6 @@
+// add the pageData as a window variable
+window.pageData = JSON.parse(document.getElementById('pageData').textContent);
+
 // This script is used to handle the 404 and 422 errors in the htmx requests.
 document.addEventListener('DOMContentLoaded', function() {
   document.body.addEventListener('htmx:beforeSwap', function (evt) {
