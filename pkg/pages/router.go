@@ -21,7 +21,6 @@ var (
 func Router(e *echo.Echo) {
 	g := e.Group("")
 	{
-		g.GET("", pageHandler)
 		g.GET("/sitemap.xml", sitemapHandler)
 		g.GET("/*", pageHandler)
 	}
