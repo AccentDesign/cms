@@ -21,6 +21,7 @@ var (
 func Router(e *echo.Echo) {
 	g := e.Group("")
 	{
+		g.GET("/robots.txt", robotsHandler)
 		g.GET("/sitemap.xml", sitemapHandler)
 		g.GET("/*", pageHandler)
 	}
@@ -124,6 +125,16 @@ func normalizePath(rawPath string) string {
 	path := strings.ToLower(rawPath)
 	path = strings.Trim(path, "/")
 	return strings.ReplaceAll(path, "/", ".")
+}
+
+func robotsHandler(c echo.Context) error {
+	cc := c.(*middleware.CustomContext)
+	settings, err := cc.Queries.GetSettings(c.Request().Context())
+	if err != nil {
+		c.Error(err)
+	}
+	robots := fmt.Sprintf("User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml", settings.SiteRootUrl)
+	return c.String(http.StatusOK, robots)
 }
 
 func sitemapHandler(c echo.Context) error {
