@@ -53,9 +53,9 @@ func runServer() {
 	engine.Use(
 		echomiddleware.Recover(),
 		middleware.Logger(),
-		middleware.SecureMiddleware(cfg.Security),
-		middleware.CORSMiddleware(cfg.Security),
-		echomiddleware.Gzip(),
+		middleware.Secure(cfg.Security),
+		middleware.CORS(cfg.Security),
+		middleware.Gzip(),
 		middleware.Context(dbPool, cfg),
 	)
 
