@@ -30,6 +30,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is config.toml)")
 	rootCmd.AddCommand(cmdServer)
 	rootCmd.AddCommand(cmdMigrate)
+	rootCmd.AddCommand(cmdTailwind)
 }
 
 func initConfig() {

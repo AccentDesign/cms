@@ -22,11 +22,6 @@ task --list-all
 ## Config
 For configuration see the `config.toml` passed in as the `--config` flag to app.
 
-> [!TIP]
-> Generate new session auth keys ask [ChatGPT](https://chat.openai.com)
-> 
-> "Could you generate random hex keys of 32 bytes and 16 bytes for me?"
-
 create your dev config:
 ```bash
 task setup:config
@@ -91,10 +86,23 @@ curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/t
 chmod +x tailwindcss-macos-arm64
 mv tailwindcss-macos-arm64 tmp/tailwindcss
 ```
+
 build and watch:
 ```bash
 task gen:tailwind
 ```
+
+When content is in the database you will need a safelist of css classes.
+To do this there is a query in `pkg/storage/db/sqlc/tailwind.sql`, this returns a unique list
+of css classes found in the `page_html.html` field. You can expand this to fit further requirements.
+
+running the following task will rebuild the `tailwind.config.js` file with an updated list of css classes.
+```bash
+task gen:tailwind-config
+```
+
+to expand the config make sure you update the `tailwind.config.js.tmpl` file to include new settings.
+With the config rebuilt, re-run the main `gen:tailwind` task.
 
 ## Docker
 This can be used to build the app as a binary and run it in a container.

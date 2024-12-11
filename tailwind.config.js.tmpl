@@ -1,0 +1,13 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+    content: ["./pkg/ui/**/*.templ"],
+    theme: {
+        extend: {},
+    },
+	safelist: [
+        {{- range $index, $class := . }}
+        {{ if $index }},{{ end }}"{{ $class }}"
+        {{- end }}
+    ],
+    plugins: [],
+}
