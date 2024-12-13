@@ -232,7 +232,7 @@ func (page *Page) Footer() templ.Component {
 			templ_7745c5c3_Var10 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<footer class=\"text-sm bg-gray-50 text-gray-500\"><div class=\"container mx-auto px-6 py-16 grid grid-cols-2 gap-6\"><div class=\"space-y-6\"><div class=\"font-medium\">Page Information</div><ul class=\"space-y-1\"><li><span class=\"font-medium\">ID:</span> ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<footer class=\"text-sm bg-gray-50 text-gray-500\"><div class=\"container mx-auto px-6 py-16 grid md:grid-cols-2 gap-6\"><div class=\"space-y-6\"><div class=\"font-medium\">Page Information</div><ul class=\"space-y-1\"><li><span class=\"font-medium\">ID:</span> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
