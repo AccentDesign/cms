@@ -13,9 +13,10 @@ templ (page *Page) HTML() {
 			<title>{ page.Meta.OGSiteName } : { page.Title }</title>
 			<link rel="stylesheet" href="/static/css/global.css"/>
 			@templ.JSONScript("pageData", page)
-			<script src="/static/js/main.js"></script>
+			@jsPageData()
 			<script src="/static/js/htmx.min.js" defer></script>
 			<script src="/static/js/hyperscript.min.js" defer></script>
+			@jsInitHtmx()
 		</head>
 		@page.PageType.Body(page)
 	</html>
