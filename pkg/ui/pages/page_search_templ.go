@@ -37,7 +37,7 @@ func (t *PageTypeSearch) Body(page *Page) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"container mx-auto px-6 flex-grow space-y-6\"><input class=\"p-2 border rounded w-96\" type=\"search\" name=\"q\" placeholder=\"search\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"container mx-auto px-6 flex-grow space-y-6\"><input class=\"p-2 border rounded w-96 max-w-full\" type=\"search\" name=\"q\" placeholder=\"search\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
