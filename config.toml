@@ -16,5 +16,9 @@ hsts_max_age = 3600
 xss_protection = "1; mode=block"
 content_type_nosniff = "nosniff"
 x_frame_options = "SAMEORIGIN"
-content_security_policy = "default-src 'self'; script-src 'self' 'nonce-'; style-src 'self' 'nonce-'; img-src 'self' https://placehold.co/"  # placeholder for nonce = nonce-
 referrer_policy = "strict-origin"
+csp_default_src = "'self'"
+csp_script_src = "'self' 'nonce-'"
+csp_style_src = "'self' 'nonce-'"
+csp_img_src = "'self' https://placehold.co/"
+csp_font_src = "'self'"

@@ -16,7 +16,7 @@ func Secure(cfg config.SecurityConfig) echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			nonce := generateNonce()
 
-			cspWithNonce := strings.ReplaceAll(cfg.ContentSecurityPolicy, "nonce-", "nonce-"+nonce)
+			cspWithNonce := strings.ReplaceAll(cfg.CSP(), "nonce-", "nonce-"+nonce)
 
 			secureConfig := middleware.SecureConfig{
 				XSSProtection:         cfg.XSSProtection,
