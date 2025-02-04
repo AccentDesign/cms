@@ -96,9 +96,9 @@ When content is in the database you will need a safelist of css classes.
 To do this there is a query in `pkg/storage/db/sqlc/tailwind.sql`, this returns a unique list
 of css classes found in the `page_html.html` field. You can expand this to fit further requirements.
 
-running the following task will rebuild the `tailwind.config.js` file with an updated list of css classes.
+running the following task will rebuild the `tailwind.safelist.txt` file with an updated list of css classes.
 ```bash
-task gen:tailwind-config
+task gen:tailwind-safelist
 ```
 
 to expand the config make sure you update the `tailwind.config.js.tmpl` file to include new settings.

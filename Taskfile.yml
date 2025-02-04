@@ -5,6 +5,8 @@ vars:
   MIGRATIONS: pkg/storage/db/migrations
   CSS_IN: pkg/ui/css/global.css
   CSS_OUT: pkg/static/public/css/global.css
+  JS_IN: pkg/ui/js
+  JS_OUT: pkg/static/public/js
 
 tasks:
   setup:config:
@@ -39,10 +41,15 @@ tasks:
     cmds:
       - ./tmp/tailwindcss -i {{.CSS_IN}} -o {{.CSS_OUT}} --watch --minify
 
-  gen:tailwind-config:
-    desc: "Generate tailwind config file with a safelist using html content in the database."
+  gen:tailwind-safelist:
+    desc: "Generate tailwind safelist file using html content in the database."
     cmds:
       - go run . tailwind --config {{.CONFIG}}
+
+  gen:esbuild:
+    desc: "Build the ui JavaScript files with esbuild."
+    cmds:
+      - npx esbuild {{.JS_IN}}/htmx.js --bundle --outfile={{.JS_OUT}}/htmx.js --minify --watch
 
   migrate:add:
     desc: "Create a new database migration file."

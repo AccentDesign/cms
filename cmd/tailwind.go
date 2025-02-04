@@ -1,24 +1,17 @@
 package cmd
 
 import (
-	"bytes"
 	"context"
 	"echo.go.dev/pkg/storage/db/dbx"
 	"fmt"
 	"github.com/jackc/pgx/v5"
 	"github.com/spf13/cobra"
 	"os"
-	"text/template"
-)
-
-var (
-	tailwindConfigTemplate = "tailwind.config.js.tmpl"
-	tailwindConfig         = "tailwind.config.js"
 )
 
 var cmdTailwind = &cobra.Command{
 	Use:   "tailwind",
-	Short: "Generate tailwind config file with a safelist using html content in the database",
+	Short: "Generate tailwind safelist file using html content in the database",
 	Run: func(cmd *cobra.Command, args []string) {
 		runTailwind()
 	},
@@ -42,34 +35,26 @@ func runTailwind() {
 		os.Exit(1)
 	}
 
-	if err = genTailwindConfig(classes); err != nil {
+	if err = genTailwindSafelist(classes); err != nil {
 		fmt.Println("Failed to update config:", err)
 		os.Exit(1)
 	}
 }
 
-func genTailwindConfig(classes []string) error {
-	file, err := os.ReadFile(tailwindConfigTemplate)
+func genTailwindSafelist(classes []string) error {
+	file, err := os.Create("tailwind.safelist.txt")
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create file: %w", err)
 	}
 
-	tmpl, err := template.New("").Parse(string(file))
-	if err != nil {
-		return err
+	defer file.Close()
+
+	for _, c := range classes {
+		_, err = file.WriteString(c + "\n")
+		if err != nil {
+			return fmt.Errorf("failed to write to file: %w", err)
+		}
 	}
 
-	var buffer bytes.Buffer
-	err = tmpl.Execute(&buffer, classes)
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(tailwindConfig, buffer.Bytes(), 0644)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("Updated Tailwind config written to", tailwindConfig)
 	return nil
 }

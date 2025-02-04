@@ -14,8 +14,7 @@ templ (page *Page) HTML() {
 			<link rel="stylesheet" href="/static/css/global.css"/>
 			@templ.JSONScript("pageData", page)
 			@jsPageData()
-			<script src="/static/js/htmx.min.js" defer></script>
-			<script src="/static/js/hyperscript.min.js" defer></script>
+			<script src="/static/js/htmx.js" defer></script>
 			@jsInitHtmx()
 		</head>
 		@page.PageType.Body(page)
