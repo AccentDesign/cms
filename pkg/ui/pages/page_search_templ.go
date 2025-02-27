@@ -37,7 +37,7 @@ func (t *PageTypeSearch) Body(page *Page) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<main class=\"container mx-auto px-6 flex-grow space-y-6\"><input class=\"p-2 border rounded w-96 max-w-full\" type=\"search\" name=\"q\" placeholder=\"search\" hx-get=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<main class=\"container mx-auto px-6 flex-grow space-y-6\"><input class=\"p-2 border border-gray-300 rounded w-96 max-w-full\" type=\"search\" name=\"q\" placeholder=\"search\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -68,7 +68,7 @@ func (t *PageTypeSearch) Body(page *Page) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, result := range t.Results {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"border-b pb-6\"><a href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"border-b border-b-gray-300 pb-6\"><a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

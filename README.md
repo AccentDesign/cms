@@ -63,7 +63,7 @@ task gen:templ
 
 use air to generate the templates and run the server:
 ```bash
-air
+task air
 ```
 
 list app commands:

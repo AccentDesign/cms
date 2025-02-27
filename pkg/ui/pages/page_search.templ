@@ -5,7 +5,7 @@ templ (t *PageTypeSearch) Body(page *Page) {
 		@page.Header()
 		<main class="container mx-auto px-6 flex-grow space-y-6">
 			<input
-				class="p-2 border rounded w-96 max-w-full"
+				class="p-2 border border-gray-300 rounded w-96 max-w-full"
 				type="search"
 				name="q"
 				placeholder="search"
@@ -19,7 +19,7 @@ templ (t *PageTypeSearch) Body(page *Page) {
 			/>
 			<div id="results" class="space-y-6">
 				for _, result := range t.Results {
-					<div class="border-b pb-6">
+					<div class="border-b border-b-gray-300 pb-6">
 						<a href={ templ.URL(result.Url) } class="text-lg font-medium hover:underline">{ result.Title }</a>
 						<div class="text-gray-600 mt-2">
 							<p>{ result.MetaDescription }</p>
